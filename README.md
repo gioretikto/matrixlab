@@ -30,14 +30,14 @@ The matrix file containing the input data is thus formatted:
 </pre>
 
 Execute with the following command:
-	./freelab matrix matrmax_dim
+	./matrixlab matrix matrmax_dim
 
 -where matrix is the file containing the matrices
 -matrmax_dim is the dimension of the largest matrix (3 in the example above)
 
 in the example above run:
 
-	./freelab matrix 3
+	./matrixlab matrix 3
 
 Matrix Determinant Calculation
 --------------------------------
