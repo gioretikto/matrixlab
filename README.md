@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 USAGE
 ------------------------------
 This is a GNU/Linux utility for manipulating and performing matrix operations.
-The matrix file containing the input is thus formatted:
+The matrix file containing the input data is thus formatted:
 
 <pre>
 1 2 3
