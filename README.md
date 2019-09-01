@@ -1,8 +1,5 @@
 # matrixlab
 
-This is a GNU/Linux utility for manipulating and performing matrix operations.
-
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -18,7 +15,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 USAGE
 ------------------------------
-The program is able to perform matrix operations. The matrix file containing the input is thus formatted:
+This is a GNU/Linux utility for manipulating and performing matrix operations.
+The matrix file containing the input is thus formatted:
 
 <pre>
 1 2 3
