@@ -9,8 +9,8 @@ struct m{
     double *data;
 };
 
-struct m add(struct m *A, struct m *B, double n);
-struct m multiply(struct m *A, struct m *B);
+struct m add(const struct m *A, const struct m *B, double n);
+struct m multiply(const struct m *A, const struct m *B);
 void f(double x);
 void print_matrix(struct m *A);
 void transpose(struct m *A);
