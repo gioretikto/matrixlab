@@ -17,7 +17,6 @@ void read_file(int maxc, FILE *fp)
     int n;
     double *d;
     char buf[MAXLINE];          /* to store each lines of file */
-    char *p;
     char op[MAXNOP];
 
     for (i = 0; i < MAXNOP; i++)
@@ -31,7 +30,6 @@ void read_file(int maxc, FILE *fp)
     ncol = 0;
     nrow = 0;
     id = 0;
-    p = buf;
 
     while (fgets(buf, MAXLINE, fp)) {
 
@@ -65,8 +63,8 @@ void read_file(int maxc, FILE *fp)
             continue;
         }
 
-        /* read integers in a line into d */
-	while (sscanf(p + off, "%lf%n", d, &n) == 1) {
+        /* read numbers in a line into d */
+	while (sscanf(buf + off, "%lf%n", d, &n) == 1) {
 	    d++;
 	    if (nrow == 0)
 		ncol++;
