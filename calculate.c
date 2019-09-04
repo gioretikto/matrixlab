@@ -25,22 +25,27 @@ void calculate(struct m *matrix, int nop, int id, char *op){
     for(i=0; i <= nop; i+=2)
     {        
         if (op[i] == '+' && op[i+1] == '?'){
-            matrix[i+1] = add(&matrix[i],&matrix[i+1],+1);
+			struct m tmp = add(&matrix[i],&matrix[i+1],+1);
+			free(matrix[i+1].data);
+			matrix[i+1] = tmp;
             break;
          }
          
          else if(op[i] == '*' && op[i+1] == '?'){
              if (matrix[i].row == 1 && matrix[i].col == 1)
                  scalar_product(matrix[i].data[0], &matrix[i+1]); //Multiplication of Scalar per matrix
-             else{                 
-                 matrix[i+1] = multiply(&matrix[i],&matrix[i+1]);
-                 matrix[i+2] = multiply(&matrix[i+1],&matrix[i+2]);
+             else{
+				struct m tmp = multiply(&matrix[i], &matrix[i+1]);
+				free(matrix[i+1].data);
+				matrix[i+1] = tmp;	
              }
              break;
          }
          
          else if (op[i] == '-' && op[i+1] == '?'){
-            matrix[i+1] = add(&matrix[i],&matrix[i+1],-1);
+			struct m tmp = add(&matrix[i],&matrix[i+1],-1);
+			free(matrix[i+1].data);
+			matrix[i+1] = tmp;
             break;
          }
        
@@ -54,17 +59,39 @@ void calculate(struct m *matrix, int nop, int id, char *op){
         }
             
          else if (op[i] == '+' && op[i+1] == '*'){
-             matrix[i+1] = multiply(&matrix[i],&matrix[i+2]);
-             matrix[i+2] = add(&matrix[i],&matrix[i+1],+1);
+			struct m tmp = multiply(&matrix[i+1], &matrix[i+2]);
+				free(matrix[i+1].data);
+				matrix[i+1] = tmp;
+
+				tmp = add(&matrix[i],&matrix[i+1],+1);
+				free(matrix[i+2].data);
+	            matrix[i+2] = tmp;
+         }
+
+         else if (op[i] == '+' && op[i+1] == '+'){
+			 struct m tmp = add(&matrix[i],&matrix[i+1],+1);
+			 free(matrix[i+1].data);
+			 matrix[i+1] = tmp;
+
+			 tmp = add(&matrix[i],&matrix[i+2],+1);
+			 free(matrix[i+2].data);
+			 matrix[i+2] = tmp;
          }
          
          else if (op[i] == '-' && op[i+1] == '*'){
-            matrix[i+1] = multiply(&matrix[i],&matrix[i+2]);
-            matrix[i+2] = add(&matrix[i],&matrix[i+1],-1);
+				struct m tmp = multiply(&matrix[i+1], &matrix[i+2]);
+				free(matrix[i+1].data);
+				matrix[i+1] = tmp;
+
+				tmp = add(&matrix[i],&matrix[i+1],-1);
+				free(matrix[i+2].data);
+	            matrix[i+2] = tmp;
          }
     }
     
     printf("=\n");
     print_matrix(&matrix[id]); /*Print the result */
+	for(i=0; i <= id; i++)
+	 	free(matrix[i].data);
     free(matrix);
 }
