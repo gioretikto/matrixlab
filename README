@@ -59,6 +59,7 @@ cos x 5
 
 and also assigment such as:
 
+<pre>
 A=
 1 1
 2 1
@@ -68,3 +69,4 @@ B=
 7 8
 
 A*B
+</pre>
