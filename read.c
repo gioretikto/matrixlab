@@ -2,23 +2,22 @@
 #include <ctype.h>
 #include <string.h>
 
-#define MAXNOP 20               /*Max number of operations allowed */
-#define MAXNMATR 40             /*Max number of matrices */
-#define MAXLINE 500             /*Max lenght of a line */
+#define MAXNOP 20               /* Max number of operations allowed */
+#define MAXNMATR 40             /* Max number of matrices */
+#define MAXLINE 500             /* Max lenght of a line */
 
-void read_file(int maxc, FILE * fp)
+void read_file(int maxc, FILE *fp)
 {
     struct m *matrix;
-    int id = 0;                 /* id of a matrix */
+    int id;                     /* id of a matrix */
     size_t ncol, nrow;          /* No of columns of a matrix */
-    ncol = nrow = 0;
-    int nop = 0;                /*No of operators */
+    int nop = 0;                /* No of operators */
     int off = 0;
     int i;
     int n;
     double *d;
-    char buf[MAXLINE];          /*to store each lines of file */
-    char *p = buf;
+    char buf[MAXLINE];          /* to store each lines of file */
+    char *p;
     char op[MAXNOP];
 
     for (i = 0; i < MAXNOP; i++)
@@ -29,7 +28,11 @@ void read_file(int maxc, FILE * fp)
         exit(1);
     }
 
-    /*Read file line by line */
+    ncol = 0;
+    nrow = 0;
+    id = 0;
+    p = buf;
+
     while (fgets(buf, MAXLINE, fp)) {
 
         if (nrow == 0) {
@@ -47,13 +50,13 @@ void read_file(int maxc, FILE * fp)
             continue;
         }
 
-        else if (strcmp(buf, "det\n") == 0) {
+        if (strcmp(buf, "det\n") == 0) {
             op[nop++] = 'd';    /* determinant operation */
             continue;
         }
 
-        /*check if line contains operator */
-        else if ((!isdigit(*buf) && buf[1] == '\n')) {
+        /* check if line contains operator */
+        if ((!isdigit(*buf) && buf[1] == '\n')) {
             op[nop++] = *buf;
             matrix[id].col = ncol;
             matrix[id].row = nrow;
@@ -62,60 +65,64 @@ void read_file(int maxc, FILE * fp)
             continue;
         }
 
-        else {                  /* read integers in a line into d */
-            while (sscanf(p + off, "%lf%n", d, &n) == 1) {
-                d++;
-                if (nrow == 0)
-                    ncol++;
-                off += n;
-            }
-            nrow++;
-            off = 0;
-        }
-    }                           /*end of while fgets cycle */
+        /* read integers in a line into d */
+	while (sscanf(p + off, "%lf%n", d, &n) == 1) {
+	    d++;
+	    if (nrow == 0)
+		ncol++;
+	    off += n;
+	}
+
+	nrow++;
+	off = 0;
+    } /* end of while fgets cycle */
 
     fclose(fp);
 
-    /*Assign last matrix No of columns and rows */
+    /* Assign last matrix No of columns and rows */
     matrix[id].col = ncol;
     matrix[id].row = nrow;
 
     if (nop == 0) {
-        printf("Nothing to do\n");
+	fprintf(stderr, "Nothing to do\n");
         exit(1);
     }
 
-    /*Printing the matrices and operations */
+    /* Printing the matrices and operations */
     for (i = 0; i <= id; i++) {
 
         if (op[i] == 'd') {
             printf("det\n");
             print_matrix(&matrix[i]);
+	    continue;
         }
 
-        else if (op[i] == '*' || op[i] == '-' || op[i] == '+') {
+        if (op[i] == '*' || op[i] == '-' || op[i] == '+') {
             print_matrix(&matrix[i]);
             if (op[i - 1] == 'i' || op[i - 1] == 'T' || op[i - 1] == 't')
                 continue;
             else
                 printf("%c\n", op[i]);
+	    continue;
         }
 
-        else if (op[i] == 't' || op[i] == 'T') {
+        if (op[i] == 't' || op[i] == 'T') {
             print_matrix(&matrix[i]);
             printf("^T\n");
             if (op[i + 1] != '?')
                 printf("%c\n", op[i + 1]);
+	    continue;
         }
 
-        else if (op[i] == 'i') {
+        if (op[i] == 'i') {
             print_matrix(&matrix[i]);
             printf("^-1\n");    /* matrix inverse operation */
             if (op[i + 1] != '?')
                 printf("%c\n", op[i + 1]);
+	    continue;
         }
 
-        else if (op[i] == '?') {
+        if (op[i] == '?') {
             print_matrix(&matrix[i]);
         }
     }
