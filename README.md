@@ -67,7 +67,7 @@ cos x 5
 
 and also assigment such as:
 
-<pre
+<pre>
 A=
 1 1
 2 1
