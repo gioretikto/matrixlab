@@ -15,7 +15,7 @@ void inverse(struct m *A)
     int col;
     double t;
 
-    det = determinant(n, A);
+    det = determinant(A);
     if (det == 0) {
 	fprintf(stderr, "The matrix is singular\n");
         exit(1);
@@ -42,7 +42,7 @@ void inverse(struct m *A)
             }
 	}
         /* transpose by swapping row and column */
-	t = pow(-1, (row & 1) ^ (col & 1)) * determinant(n - 1, &R) / det;
+	t = pow(-1, (row & 1) ^ (col & 1)) * determinant(&R) / det;
 	matrix_set(&C, col, row, t);
     }
     matrix_free(&R);
@@ -50,50 +50,50 @@ void inverse(struct m *A)
     *A = C;
 }
 
-double determinant(size_t n, struct m *A)
+double determinant(struct m *A)
 {
-    size_t i, j, i_count, j_count, count = 0;
-
+    size_t i, j, i_count, j_count, count;
     double det = 0;
+    double t;
+    struct m C;
+    size_t n = matrix_rows(A);
 
     if (n < 1) {
-        printf("Error\n");
+        fprintf(stderr, "Error, matrix size < 1\n");
         exit(1);
     }
 
-    else if (n == 1)
-        return A->data[0];
+    if (n == 1)
+        return matrix_get(A, 0, 0);
 
-    else if (n == 2)
-        return (A->data[0] * A->data[1 * A->col + 1] -
-                A->data[0 + 1] * A->data[1 * A->col + 0]);
-
-    else {
-        struct m C;
-
-        C.row = A->row - 1;
-        C.col = A->col - 1;
-
-        C.data = malloc(sizeof(double) * (A->row - 1) * (A->col - 1));
-
-        for (count = 0; count < n; count++) {
-            //Creating array of Minors
-            i_count = 0;
-            for (i = 1; i < n; i++) {
-                j_count = 0;
-                for (j = 0; j < n; j++) {
-                    if (j == count)
-                        continue;   // don't copy the minor column element
-                    C.data[i_count * C.col + j_count] = A->data[i * A->col + j];
-                    j_count++;
-                }
-                i_count++;
-            }
-            det += pow(-1, count) * A->data[count] * determinant(n - 1, &C);    //Recursive call
-        }
-        free(C.data);
-        return det;
+    if (n == 2) {
+	t = matrix_get(A, 0, 0) * matrix_get(A, 1, 1)
+	    - matrix_get(A, 0, 1) * matrix_get(A, 1, 0);
+	return t;
     }
+
+    matrix_new(&C, matrix_cols(A) - 1, matrix_rows(A) - 1);
+
+    for (count = 0; count < n; count++) {
+	/* Creating array of Minors */
+	i_count = 0;
+	for (i = 1; i < n; i++) {
+	    j_count = 0;
+	    for (j = 0; j < n; j++) {
+		if (j == count)
+		    /* don't copy the minor column element */
+		    continue;
+
+		t = matrix_get(A, i, j);
+		matrix_set(&C, i_count, j_count, t);
+		j_count++;
+	    }
+	    i_count++;
+	}
+	det += pow(-1, count) * matrix_get(A, count, 1) * determinant(&C); /* Recursive call */
+    }
+    matrix_free(&C);
+    return det;
 }
 
 struct m multiply(const struct m *A, const struct m *B)

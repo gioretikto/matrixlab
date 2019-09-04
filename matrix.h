@@ -65,7 +65,7 @@ struct m add(const struct m *A, const struct m *B, double n);
 struct m multiply(const struct m *A, const struct m *B);
 void print_matrix(struct m *A);
 void transpose(struct m *A);
-double determinant(size_t n, struct m *A);
+double determinant(struct m *A);
 void scalar_product(double scalar, struct m *B);
 void inverse(struct m *A);
 

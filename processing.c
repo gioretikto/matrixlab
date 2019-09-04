@@ -19,7 +19,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
             transpose(&matrix[0]);
 
         else if (op[i] == 'd') {
-            matrix[i].data[0] = determinant(matrix[i].row, &matrix[i]);
+            matrix[i].data[0] = determinant(&matrix[i]);
             matrix[i].row = 1;
             matrix[i].col = 1;
         }
