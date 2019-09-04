@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define MAXNOP 20 /*Max number of operations allowed */
+#define MAXNOP 20               /*Max number of operations allowed */
 
-struct m{
+struct m {
     size_t row;
     size_t col;
     double *data;
@@ -17,5 +17,5 @@ void transpose(struct m *A);
 double determinant(size_t n, struct m *A);
 void scalar_product(double scalar, struct m *B);
 void inverse(size_t n, struct m *A);
-void read_file(int maxc, FILE *fp);
+void read_file(int maxc, FILE * fp);
 void calculate(struct m *matrix, int nop, int id, char op[MAXNOP]);

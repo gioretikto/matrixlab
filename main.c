@@ -27,14 +27,15 @@
 #include <math.h>
 #include "functions.h"
 
-int main(int argc, char *argv[]){
-    
+int main(int argc, char *argv[])
+{
+
     FILE *file = argc > 1 ? fopen(argv[1], "rb") : stdin;
-   
+
     /*define max dimension of a matrix */
-    int maxc = argc>2?atoi(argv[2])*atoi(argv[2]):100;
-    
-    read_file(maxc, file);       
- 
+    int maxc = argc > 2 ? atoi(argv[2]) * atoi(argv[2]) : 100;
+
+    read_file(maxc, file);
+
     return 0;
 }
