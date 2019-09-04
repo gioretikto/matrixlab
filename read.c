@@ -75,12 +75,14 @@ void read_file(int maxc, FILE *fp)
             off = 0;
         }
     } /*end of while fgets cycle */
+
+	fclose(fp);
        
     /*Assign last matrix No of columns and rows */
     matrix[id].col = ncol;
     matrix[id].row = nrow;
     
-    if (nop ==0){
+    if (nop == 0){
         printf("Nothing to do\n");
         exit(1);
     }        
