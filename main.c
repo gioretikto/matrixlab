@@ -21,19 +21,44 @@
  * USA
  */
 
+#include "functions.h"
+
+#include <ctype.h>
+#include <errno.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <math.h>
-#include "functions.h"
+#include <string.h>
+
+#define DEFAULT_FILE stdin
+#define DEFAULT_DIMENSION 100
 
 int main(int argc, char *argv[])
 {
 
-    FILE *file = argc > 1 ? fopen(argv[1], "rb") : stdin;
+    FILE *file = DEFAULT_FILE;
+    int maxc = DEFAULT_DIMENSION;
 
-    /*define max dimension of a matrix */
-    int maxc = argc > 2 ? atoi(argv[2]) * atoi(argv[2]) : 100;
+    if (argc > 1) {
+	file = fopen(argv[1], "rb");
+	if (file == NULL) {
+	    fprintf(stderr, "Could not open input file %s: %s\n",
+		    argv[1], strerror(errno));
+	    return 1;
+	}
+    }
+
+    if (argc > 2) {
+	int tmp;
+
+	tmp = atoi(argv[2]);
+	if (tmp == 0) {
+	    fprintf(stderr, "Wrong dimension %s\n", argv[2]);
+	    fclose(file);
+	    return 1;
+	}
+	maxc = tmp;
+    }
 
     read_file(maxc, file);
 
