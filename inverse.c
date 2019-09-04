@@ -36,5 +36,6 @@ void inverse(size_t n, struct m *A)
         C.data[col * C.col + row] =
             pow(-1, (row & 1) ^ (col & 1)) * determinant(n - 1, &R) / det;
     }
+    free(A->data);
     *A = C;
 }
