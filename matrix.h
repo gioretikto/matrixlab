@@ -67,6 +67,6 @@ void print_matrix(struct m *A);
 void transpose(struct m *A);
 double determinant(size_t n, struct m *A);
 void scalar_product(double scalar, struct m *B);
-void inverse(size_t n, struct m *A);
+void inverse(struct m *A);
 
 #endif /* _MATRIXLAB_MATRIX_H_ */

@@ -28,7 +28,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
             if (matrix[0].row != matrix[0].col)
                 printf
                     ("Error: You can only calculate the inverse of square matrices\n");
-            inverse(matrix[0].row, &matrix[0]);
+            inverse(&matrix[0]);
         }
     }
 
