@@ -4,7 +4,7 @@
 #include <math.h>
 #include "functions.h"
 
-struct m multiply(struct m *A, struct m *B) 
+struct m multiply(const struct m *A, const struct m *B) 
 { 
     size_t i, j, k;
     struct m C;
@@ -26,7 +26,7 @@ struct m multiply(struct m *A, struct m *B)
     return C;
 }
 
-struct m add(struct m *A, struct m *B, double n) 
+struct m add(const struct m *A, const struct m *B, double n) 
 { 
     if ( (A->row != B->row) || (A->col != B->col) ){
         printf("Error: You can't sum up matrix of different dimension\n");
