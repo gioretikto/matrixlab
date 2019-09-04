@@ -8,7 +8,7 @@
 #define MAXNMATR 40             /* Max number of matrices */
 #define MAXLINE 500             /* Max lenght of a line */
 
-void calculate(struct m *matrix, int nop, int id, char *op)
+static void calculate(struct m *matrix, int nop, int id, char *op)
 {
 
     int i;

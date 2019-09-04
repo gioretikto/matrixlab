@@ -134,7 +134,7 @@ struct m add(const struct m *A, const struct m *B, double n)
     return C;
 }
 
-void f(double x)
+static void f(double x)
 {
     double i, f = modf(x, &i);
 
