@@ -267,7 +267,8 @@ void read_file(int maxc, FILE *fp)
 
         if (op[i] == '*' || op[i] == '-' || op[i] == '+') {
             print_matrix(&matrix[i]);
-            if (op[i - 1] == 'i' || op[i - 1] == 'T' || op[i - 1] == 't')
+            if (i > 0 &&
+		(op[i - 1] == 'i' || op[i - 1] == 'T' || op[i - 1] == 't'))
                 continue;
             else
                 printf("%c\n", op[i]);
