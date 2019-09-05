@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void inverse(struct m *A)
+struct m inverse(const struct m *A)
 {
     double det;
     size_t n = matrix_rows(A);
@@ -45,12 +45,12 @@ void inverse(struct m *A)
 	t = pow(-1, (row & 1) ^ (col & 1)) * determinant(&R) / det;
 	matrix_set(&C, col, row, t);
     }
+
     matrix_free(&R);
-    matrix_free(A);
-    *A = C;
+    return C;
 }
 
-double determinant(struct m *A)
+double determinant(const struct m *A)
 {
     size_t i, j, i_count, j_count, count;
     double det = 0;
@@ -173,20 +173,28 @@ void print_matrix(const struct m *A)
     }
 }
 
-void scalar_product(struct m *A, double scalar)
+struct m scalar_product(const struct m *A, double scalar)
 {
     size_t i, j;
     double t;
+    struct m R;
+    size_t row, col;
 
-    for (i = 0; i < matrix_rows(A); i++) {
-	for (j = 0; j < matrix_cols(A); j++) {
+    row = matrix_rows(A);
+    col = matrix_cols(A);
+
+    matrix_new(&R, row, col);
+
+    for (i = 0; i < row; i++) {
+	for (j = 0; j < col; j++) {
 	    t = scalar * matrix_get(A, i, j);
-	    matrix_set(A, i, j, t);
+	    matrix_set(&R, i, j, t);
 	}
     }
+    return R;
 }
 
-void transpose(struct m *A)
+struct m transpose(const struct m *A)
 {
     struct m C;
     size_t i, j;
@@ -205,6 +213,6 @@ void transpose(struct m *A)
 	    matrix_set(&C, i, j, t);
 	}
     }
-    matrix_free(A);
-    *A = C;
+
+    return C;
 }

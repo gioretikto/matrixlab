@@ -8,15 +8,28 @@
 #define MAXNMATR 40             /* Max number of matrices */
 #define MAXLINE 500             /* Max lenght of a line */
 
+#define IN_PLACE(op, pelem) do {		\
+	tmp = op(pelem);			\
+	matrix_free(pelem);			\
+	*pelem = tmp;				\
+    } while (0)
+
+#define IN_PLACE_1(op, pelem, arg) do {		\
+	tmp = op(pelem, arg);			\
+	matrix_free(pelem);			\
+	*pelem = tmp;				\
+    } while (0)
+
 static void calculate(struct m *matrix, int nop, int id, char *op)
 {
 
     int i;
+    struct m tmp;
 
     for (i = 0; i < nop; i++) {
         /*Transpose the matrices */
         if (op[i] == 't' || op[i] == 'T')
-            transpose(&matrix[0]);
+	    IN_PLACE(transpose, &matrix[0]);
 
         else if (op[i] == 'd') {
             matrix[i].data[0] = determinant(&matrix[i]);
@@ -28,13 +41,13 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
             if (matrix[0].row != matrix[0].col)
                 printf
                     ("Error: You can only calculate the inverse of square matrices\n");
-            inverse(&matrix[0]);
+	    IN_PLACE(inverse, &matrix[0]);
         }
     }
 
     for (i = 0; i <= nop; i += 2) {
         if (op[i] == '+' && op[i + 1] == '?') {
-            struct m tmp = add(&matrix[i], &matrix[i + 1], +1);
+            tmp = add(&matrix[i], &matrix[i + 1], +1);
             free(matrix[i + 1].data);
             matrix[i + 1] = tmp;
             break;
@@ -42,9 +55,10 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 
         else if (op[i] == '*' && op[i + 1] == '?') {
             if (matrix[i].row == 1 && matrix[i].col == 1)
-		scalar_product(&matrix[i + 1], matrix[i].data[0]);  //Multiplication of Scalar per matrix
+		/* Multiplication of Scalar per matrix */
+		IN_PLACE_1(scalar_product, &matrix[i + 1], matrix[i].data[0]);
             else {
-                struct m tmp = multiply(&matrix[i], &matrix[i + 1]);
+                tmp = multiply(&matrix[i], &matrix[i + 1]);
                 free(matrix[i + 1].data);
                 matrix[i + 1] = tmp;
             }
@@ -52,7 +66,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
         }
 
         else if (op[i] == '-' && op[i + 1] == '?') {
-            struct m tmp = add(&matrix[i], &matrix[i + 1], -1);
+            tmp = add(&matrix[i], &matrix[i + 1], -1);
             free(matrix[i + 1].data);
             matrix[i + 1] = tmp;
             break;
@@ -60,7 +74,8 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 
         else if (op[i] == '*' && op[i + 1] == '+') {
             if (matrix[i].row == 1 && matrix[i].col == 1)
-                scalar_product(&matrix[i + 1], matrix[i].data[0]);  //Multiplication of Scalar per matrix
+		/* Multiplication of Scalar per matrix */
+		IN_PLACE_1(scalar_product, &matrix[i + 1], matrix[i].data[0]);
             else {
                 matrix[i + 1] = multiply(&matrix[i], &matrix[i + 1]);
                 matrix[i + 2] = add(&matrix[i + 1], &matrix[i + 2], +1);
@@ -68,7 +83,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
         }
 
         else if (op[i] == '+' && op[i + 1] == '*') {
-            struct m tmp = multiply(&matrix[i + 1], &matrix[i + 2]);
+            tmp = multiply(&matrix[i + 1], &matrix[i + 2]);
             free(matrix[i + 1].data);
             matrix[i + 1] = tmp;
 
@@ -78,7 +93,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
         }
 
         else if (op[i] == '+' && op[i + 1] == '+') {
-            struct m tmp = add(&matrix[i], &matrix[i + 1], +1);
+            tmp = add(&matrix[i], &matrix[i + 1], +1);
             free(matrix[i + 1].data);
             matrix[i + 1] = tmp;
 
@@ -88,7 +103,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
         }
 
         else if (op[i] == '-' && op[i + 1] == '*') {
-            struct m tmp = multiply(&matrix[i + 1], &matrix[i + 2]);
+            tmp = multiply(&matrix[i + 1], &matrix[i + 2]);
             free(matrix[i + 1].data);
             matrix[i + 1] = tmp;
 

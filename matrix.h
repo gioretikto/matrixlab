@@ -74,9 +74,9 @@ static inline bool matrix_is_same_size(const struct m *M1,
 struct m add(const struct m *A, const struct m *B, double n);
 struct m multiply(const struct m *A, const struct m *B);
 void print_matrix(const struct m *A);
-void transpose(struct m *A);
-double determinant(struct m *A);
-void scalar_product(struct m *A, double scalar);
-void inverse(struct m *A);
+struct m transpose(const struct m *A);
+double determinant(const struct m *A);
+struct m scalar_product(const struct m *A, double scalar);
+struct m inverse(const struct m *A);
 
 #endif /* _MATRIXLAB_MATRIX_H_ */
