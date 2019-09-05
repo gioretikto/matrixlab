@@ -149,29 +149,25 @@ struct m add(const struct m *A, const struct m *B, double n)
     return C;
 }
 
-static void f(double x)
+static void print_elem(double x)
 {
     double i, f = modf(x, &i);
 
     if (f < .00001)
         printf("%.f ", i);
-
     else
         printf("%f ", x);
 }
 
-/*printing a Matrix*/
-
-void print_matrix(struct m *A)
+void print_matrix(const struct m *A)
 {
-
     size_t i, j;
+    size_t row = matrix_rows(A);
+    size_t col = matrix_cols(A);
 
-    double *tmp = A->data;
-
-    for (i = 0; i < A->row; i++) {
-        for (j = 0; j < A->col; j++) {
-            f(*(tmp++));
+    for (i = 0; i < row; i++) {
+        for (j = 0; j < col; j++) {
+	    print_elem(matrix_get(A, i, j));
         }
         putchar('\n');
     }
