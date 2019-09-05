@@ -115,9 +115,6 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 
     printf("=\n");
     print_matrix(&matrix[id]);  /*Print the result */
-    for (i = 0; i <= id; i++)
-        free(matrix[i].data);
-    free(matrix);
 }
 
 void read_file(int maxc, FILE *fp)
@@ -240,4 +237,8 @@ void read_file(int maxc, FILE *fp)
     }
 
     calculate(matrix, nop, id, op);
+
+    for (i = 0; i <= id; i++)
+        free(matrix[i].data);
+    free(matrix);
 }
