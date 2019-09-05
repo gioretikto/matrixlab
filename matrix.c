@@ -123,22 +123,28 @@ struct m multiply(const struct m *A, const struct m *B)
 
 struct m add(const struct m *A, const struct m *B, double n)
 {
-    if ((A->row != B->row) || (A->col != B->col)) {
-        printf("Error: You can't sum up matrix of different dimension\n");
+    size_t i, j;
+    struct m C;
+    size_t col, row;
+    double t;
+
+    if (!matrix_is_same_size(A, B)) {
+        fprintf(stderr,
+		"Error: You can't sum up matrix of different dimension\n");
         exit(1);
     }
 
-    size_t i, j;
+    col = matrix_cols(A);
+    row = matrix_rows(A);
 
-    struct m C;
-    C.data = malloc(sizeof(double) * A->row * B->col);
-    C.row = A->row;
-    C.col = A->col;
+    matrix_new(&C, col, row);
 
-    for (i = 0; i < C.row; i++)
-        for (j = 0; j < C.col; j++)
-            C.data[i * C.col + j] =
-                A->data[i * A->col + j] + n * B->data[i * B->col + j];
+    for (i = 0; i < row; i++) {
+        for (j = 0; j < col; j++) {
+	    t = matrix_get(A, i, j) + (n * matrix_get(B, i, j));
+	    matrix_set(&C, i, j, t);
+	}
+    }
 
     return C;
 }
