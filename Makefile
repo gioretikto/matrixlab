@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -g -Wshadow -pedantic
 LDFLAGS = -lm
-OBJFILES = main.o functions.o determinant.o inverse.o read.o calculate.o
+OBJFILES = main.o processing.o matrix.o
 TARGET = freelab
 all: $(TARGET)
 
