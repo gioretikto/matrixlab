@@ -119,7 +119,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 
 void read_file(int maxc, FILE *fp)
 {
-    struct m *matrix;
+    struct m matrix[MAXNMATR];
     int id;                     /* id of a matrix */
     size_t ncol, nrow;          /* No of columns of a matrix */
     int nop = 0;                /* No of operators */
@@ -132,11 +132,6 @@ void read_file(int maxc, FILE *fp)
 
     for (i = 0; i < MAXNOP; i++)
         op[i] = '?';
-
-    if (!(matrix = malloc(MAXNMATR * sizeof *(matrix)))) {
-        perror("malloc-matrix");
-        exit(1);
-    }
 
     ncol = 0;
     nrow = 0;
@@ -240,5 +235,4 @@ void read_file(int maxc, FILE *fp)
 
     for (i = 0; i <= id; i++)
         free(matrix[i].data);
-    free(matrix);
 }
