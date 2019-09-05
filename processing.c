@@ -1,6 +1,7 @@
 #include "matrix.h"
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -122,32 +123,101 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
     print_matrix(&matrix[id]);  /*Print the result */
 }
 
+struct matrix_state {
+    double *buf;
+    size_t row;
+    size_t col;
+    size_t pos;
+    bool started; /* matrix parsing started */
+};
+
+
+static void matrix_parse_init(struct matrix_state *s, int maxc)
+{
+    s->started = false;
+    s->buf = malloc(sizeof(*s->buf) * maxc);
+    if (s->buf == NULL)
+	abort();
+}
+
+static void matrix_parse_row(struct matrix_state *s, char *str)
+{
+    size_t off = 0;
+    int n;
+
+    /* read numbers in a line into s->buf */
+    while (sscanf(str + off, "%lf%n", &s->buf[s->pos], &n) == 1) {
+	s->pos++;
+	if (s->row == 0)
+	    s->col++;
+	off += n;
+    }
+
+    s->row++;
+}
+
+static void matrix_parse_start(struct matrix_state *s, char *str)
+{
+    s->row = 0;
+    s->col = 0;
+    s->pos = 0;
+    s->started = true;
+}
+
+static void matrix_parse_line(struct matrix_state *s, char *str)
+{
+    if (!s->started)
+	matrix_parse_start(s, str);
+    matrix_parse_row(s, str);
+}
+
+static bool matrix_parse_end(struct matrix_state *s, struct m *M)
+{
+    if (!s->started)
+	return false;
+
+    matrix_new_data(M, s->row, s->col, s->buf);
+    s->started = false;
+    return true;
+}
+
+static bool matrix_parse_end_all(struct matrix_state *s, struct m *M)
+{
+    bool rc;
+
+    rc = matrix_parse_end(s, M);
+    free(s->buf);
+
+    return rc;
+}
+
+static bool is_operator_line(char *buf)
+{
+    return !isdigit(*buf) && buf[1] == '\n';
+}
+
 void read_file(int maxc, FILE *fp)
 {
     struct m matrix[MAXNMATR];
     int id;                     /* id of a matrix */
-    size_t ncol, nrow;          /* No of columns of a matrix */
     int nop = 0;                /* No of operators */
-    int off = 0;
     int i;
-    int n;
-    double *d;
     char buf[MAXLINE];          /* to store each lines of file */
     char op[MAXNOP];
+    struct matrix_state parse_state;
+    struct m tmp;
 
     for (i = 0; i < MAXNOP; i++)
         op[i] = '?';
 
-    ncol = 0;
-    nrow = 0;
+    matrix_parse_init(&parse_state, maxc);
     id = 0;
 
     while (fgets(buf, MAXLINE, fp)) {
-
-        if (nrow == 0) {
-            /* allocate/validate max no. of matrix */
-            d = matrix[id].data = malloc(sizeof(double) * maxc);
-        }
+	if (id >= MAXNMATR) {
+	    fprintf(stderr, "Too much matrices, max is %d\n", MAXNMATR);
+	    abort();
+	}
 
         if (strcmp(buf, "^-1\n") == 0) {
             op[nop++] = 'i';    /* matrix inverse operation */
@@ -164,33 +234,22 @@ void read_file(int maxc, FILE *fp)
             continue;
         }
 
-        /* check if line contains operator */
-        if ((!isdigit(*buf) && buf[1] == '\n')) {
-            op[nop++] = *buf;
-            matrix[id].col = ncol;
-            matrix[id].row = nrow;
-            nrow = ncol = 0;
-            id++;
+        if (!is_operator_line(buf)) {
+	    matrix_parse_line(&parse_state, buf);
+	} else {
+	    if (matrix_parse_end(&parse_state, &tmp))
+		matrix[id++] = tmp;
+
+	    op[nop++] = *buf;
             continue;
         }
 
-        /* read numbers in a line into d */
-	while (sscanf(buf + off, "%lf%n", d, &n) == 1) {
-	    d++;
-	    if (nrow == 0)
-		ncol++;
-	    off += n;
-	}
-
-	nrow++;
-	off = 0;
     } /* end of while fgets cycle */
 
     fclose(fp);
 
-    /* Assign last matrix No of columns and rows */
-    matrix[id].col = ncol;
-    matrix[id].row = nrow;
+    if (matrix_parse_end_all(&parse_state, &tmp))
+	matrix[id] = tmp;
 
     if (nop == 0) {
 	fprintf(stderr, "Nothing to do\n");

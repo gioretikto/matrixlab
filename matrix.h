@@ -29,6 +29,14 @@ static inline struct m *matrix_new(struct m *M, size_t r, size_t c)
 	return M;
 }
 
+static inline struct m *matrix_new_data(struct m *M, size_t r, size_t c,
+					double *data)
+{
+	matrix_new(M, r, c);
+	memcpy(M->data, data, sizeof(*M->data) * r * c);
+	return M;
+}
+
 static inline void matrix_free(struct m *M)
 {
 	free(M->data);
