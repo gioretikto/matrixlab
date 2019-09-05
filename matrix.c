@@ -189,14 +189,22 @@ void scalar_product(struct m *A, double scalar)
 void transpose(struct m *A)
 {
     struct m C;
-    C.data = malloc(sizeof(double) * A->row * A->col);
-
-    C.row = A->col;
-    C.col = A->row;
-
     size_t i, j;
-    for (i = 0; i < C.row; i++)
-        for (j = 0; j < C.col; j++)
-            C.data[i * C.col + j] = A->data[j * A->col + i];
+    size_t row, col;
+    double t;
+
+    /* transpose, so opposite order */
+    row = matrix_cols(A);
+    col = matrix_rows(A);
+
+    matrix_new(&C, row, col);
+
+    for (i = 0; i < row; i++) {
+        for (j = 0; j < col; j++) {
+	    t = matrix_get(A, j, i);
+	    matrix_set(&C, i, j, t);
+	}
+    }
+    matrix_free(A);
     *A = C;
 }
