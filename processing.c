@@ -42,7 +42,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 
         else if (op[i] == '*' && op[i + 1] == '?') {
             if (matrix[i].row == 1 && matrix[i].col == 1)
-                scalar_product(matrix[i].data[0], &matrix[i + 1]);  //Multiplication of Scalar per matrix
+		scalar_product(&matrix[i + 1], matrix[i].data[0]);  //Multiplication of Scalar per matrix
             else {
                 struct m tmp = multiply(&matrix[i], &matrix[i + 1]);
                 free(matrix[i + 1].data);
@@ -60,7 +60,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 
         else if (op[i] == '*' && op[i + 1] == '+') {
             if (matrix[i].row == 1 && matrix[i].col == 1)
-                scalar_product(matrix[i].data[0], &matrix[i + 1]);  //Multiplication of Scalar per matrix
+                scalar_product(&matrix[i + 1], matrix[i].data[0]);  //Multiplication of Scalar per matrix
             else {
                 matrix[i + 1] = multiply(&matrix[i], &matrix[i + 1]);
                 matrix[i + 2] = add(&matrix[i + 1], &matrix[i + 2], +1);

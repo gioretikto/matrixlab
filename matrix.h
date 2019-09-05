@@ -76,7 +76,7 @@ struct m multiply(const struct m *A, const struct m *B);
 void print_matrix(const struct m *A);
 void transpose(struct m *A);
 double determinant(struct m *A);
-void scalar_product(double scalar, struct m *B);
+void scalar_product(struct m *A, double scalar);
 void inverse(struct m *A);
 
 #endif /* _MATRIXLAB_MATRIX_H_ */

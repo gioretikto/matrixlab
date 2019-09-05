@@ -173,13 +173,17 @@ void print_matrix(const struct m *A)
     }
 }
 
-void scalar_product(double scalar, struct m *B)
+void scalar_product(struct m *A, double scalar)
 {
     size_t i, j;
+    double t;
 
-    for (i = 0; i < B->row; i++)
-        for (j = 0; j < B->col; j++)
-            B->data[i * B->col + j] = scalar * B->data[i * B->col + j];
+    for (i = 0; i < matrix_rows(A); i++) {
+	for (j = 0; j < matrix_cols(A); j++) {
+	    t = scalar * matrix_get(A, i, j);
+	    matrix_set(A, i, j, t);
+	}
+    }
 }
 
 void transpose(struct m *A)
