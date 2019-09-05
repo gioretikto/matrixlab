@@ -9,14 +9,8 @@
 #define MAXNMATR 40             /* Max number of matrices */
 #define MAXLINE 500             /* Max lenght of a line */
 
-#define IN_PLACE(op, pelem) do {		\
-	tmp = op(pelem);			\
-	matrix_free(pelem);			\
-	*pelem = tmp;				\
-    } while (0)
-
-#define IN_PLACE_1(op, pelem, arg) do {		\
-	tmp = op(pelem, arg);			\
+#define IN_PLACE(op, pelem, ...) do {		\
+	tmp = op(pelem, ## __VA_ARGS__);	\
 	matrix_free(pelem);			\
 	*pelem = tmp;				\
     } while (0)
@@ -57,7 +51,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
         else if (op[i] == '*' && op[i + 1] == '?') {
             if (matrix[i].row == 1 && matrix[i].col == 1)
 		/* Multiplication of Scalar per matrix */
-		IN_PLACE_1(scalar_product, &matrix[i + 1], matrix[i].data[0]);
+		IN_PLACE(scalar_product, &matrix[i + 1], matrix[i].data[0]);
             else {
                 tmp = multiply(&matrix[i], &matrix[i + 1]);
                 free(matrix[i + 1].data);
@@ -76,7 +70,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
         else if (op[i] == '*' && op[i + 1] == '+') {
             if (matrix[i].row == 1 && matrix[i].col == 1)
 		/* Multiplication of Scalar per matrix */
-		IN_PLACE_1(scalar_product, &matrix[i + 1], matrix[i].data[0]);
+		IN_PLACE(scalar_product, &matrix[i + 1], matrix[i].data[0]);
             else {
 		tmp = matrix[i + 1];
                 matrix[i + 1] = multiply(&matrix[i], &matrix[i + 1]);
