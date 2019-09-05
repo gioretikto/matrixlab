@@ -20,7 +20,6 @@ static void calculate(struct m *matrix[], int nop, int id, char *op)
 
     int i;
     struct m *tmp;
-    double d;
 
     for (i = 0; i < nop; i++) {
         /*Transpose the matrices */
@@ -28,10 +27,7 @@ static void calculate(struct m *matrix[], int nop, int id, char *op)
 	    IN_PLACE(transpose, matrix[0]);
 
         else if (op[i] == 'd') {
-            d = determinant(matrix[i]);
-	    tmp = matrix[i];
-	    matrix[i] = matrix_new_data(1, 1, &d);
-	    matrix_free(tmp);
+	    IN_PLACE(determinant, matrix[i]);
         }
 
         if (op[i] == 'i') {

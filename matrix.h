@@ -90,7 +90,7 @@ struct m *add(const struct m *A, const struct m *B, double n);
 struct m *multiply(const struct m *A, const struct m *B);
 void print_matrix(const struct m *A);
 struct m *transpose(const struct m *A);
-double determinant(const struct m *A);
+struct m *determinant(const struct m *A);
 struct m *scalar_product(const struct m *A, double scalar);
 struct m *inverse(const struct m *A);
 
