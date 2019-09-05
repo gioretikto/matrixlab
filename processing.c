@@ -77,8 +77,13 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 		/* Multiplication of Scalar per matrix */
 		IN_PLACE_1(scalar_product, &matrix[i + 1], matrix[i].data[0]);
             else {
+		tmp = matrix[i + 1];
                 matrix[i + 1] = multiply(&matrix[i], &matrix[i + 1]);
+		free(tmp.data);
+
+		tmp = matrix[i + 2];
                 matrix[i + 2] = add(&matrix[i + 1], &matrix[i + 2], +1);
+		free(tmp.data);
             }
         }
 
