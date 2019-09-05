@@ -121,6 +121,50 @@ static void calculate(struct m *matrix[], int nop, int id, char *op)
     print_matrix(matrix[id]);  /*Print the result */
 }
 
+static void print_task(struct m *matrix[], size_t id, char *op)
+{
+    size_t i;
+
+    for (i = 0; i <= id; i++) {
+
+        if (op[i] == 'd') {
+            printf("det\n");
+            print_matrix(matrix[i]);
+	    continue;
+        }
+
+        if (op[i] == '*' || op[i] == '-' || op[i] == '+') {
+            print_matrix(matrix[i]);
+            if (i > 0 &&
+		(op[i - 1] == 'i' || op[i - 1] == 'T' || op[i - 1] == 't'))
+                continue;
+            else
+                printf("%c\n", op[i]);
+	    continue;
+        }
+
+        if (op[i] == 't' || op[i] == 'T') {
+            print_matrix(matrix[i]);
+            printf("^T\n");
+            if (op[i + 1] != '?')
+                printf("%c\n", op[i + 1]);
+	    continue;
+        }
+
+        if (op[i] == 'i') {
+            print_matrix(matrix[i]);
+            printf("^-1\n");    /* matrix inverse operation */
+            if (op[i + 1] != '?')
+                printf("%c\n", op[i + 1]);
+	    continue;
+        }
+
+        if (op[i] == '?') {
+            print_matrix(matrix[i]);
+        }
+    }
+}
+
 struct matrix_state {
     double *buf;
     size_t row;
@@ -257,45 +301,7 @@ void read_file(int maxc, FILE *fp)
         exit(1);
     }
 
-    /* Printing the matrices and operations */
-    for (i = 0; i <= id; i++) {
-
-        if (op[i] == 'd') {
-            printf("det\n");
-            print_matrix(matrix[i]);
-	    continue;
-        }
-
-        if (op[i] == '*' || op[i] == '-' || op[i] == '+') {
-            print_matrix(matrix[i]);
-            if (i > 0 &&
-		(op[i - 1] == 'i' || op[i - 1] == 'T' || op[i - 1] == 't'))
-                continue;
-            else
-                printf("%c\n", op[i]);
-	    continue;
-        }
-
-        if (op[i] == 't' || op[i] == 'T') {
-            print_matrix(matrix[i]);
-            printf("^T\n");
-            if (op[i + 1] != '?')
-                printf("%c\n", op[i + 1]);
-	    continue;
-        }
-
-        if (op[i] == 'i') {
-            print_matrix(matrix[i]);
-            printf("^-1\n");    /* matrix inverse operation */
-            if (op[i + 1] != '?')
-                printf("%c\n", op[i + 1]);
-	    continue;
-        }
-
-        if (op[i] == '?') {
-            print_matrix(matrix[i]);
-        }
-    }
+    print_task(matrix, id, op);
 
     calculate(matrix, nop, id, op);
 
