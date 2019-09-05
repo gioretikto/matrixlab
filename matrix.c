@@ -100,21 +100,23 @@ struct m multiply(const struct m *A, const struct m *B)
 {
     size_t i, j, k;
     struct m C;
-    C.data = malloc(sizeof(double) * A->row * B->col);
+    size_t row, col;
+    double t1, t2;
 
-    C.row = A->row;
-    C.col = B->col;
+    row = matrix_rows(A);
+    col = matrix_cols(B);
 
-    for (i = 0; i < C.row; i++)
-        for (j = 0; j < C.col; j++)
-            C.data[i * C.col + j] = 0;
+    matrix_new(&C, col, row);
 
-    // Multiplying matrix A and B and storing in C.
-    for (i = 0; i < A->row; ++i)
-        for (j = 0; j < B->col; ++j)
-            for (k = 0; k < A->col; ++k)
-                C.data[i * C.col + j] +=
-                    A->data[i * A->col + k] * B->data[k * B->col + j];
+    /* Multiplying matrix A and B and storing in C */
+    for (i = 0; i < row; ++i)
+        for (j = 0; j < col; ++j)
+            for (k = 0; k < matrix_cols(A); ++k) {
+
+		t1 = matrix_get(A, i, k) * matrix_get(B, k, j);
+		t2 = matrix_get(&C, i, j);
+		matrix_set(&C, i, j, t1 + t2);
+	    }
 
     return C;
 }
