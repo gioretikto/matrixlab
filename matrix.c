@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct m inverse(const struct m *A)
+struct m *inverse(const struct m *A)
 {
     double det;
     size_t n = matrix_rows(A);
-    struct m C;                 /*The Adjoint matrix */
-    struct m R;
+    struct m *C;                 /*The Adjoint matrix */
+    struct m *R;
     size_t i, j, i_count, j_count, count;
     int row;
     int col;
@@ -21,8 +21,8 @@ struct m inverse(const struct m *A)
         exit(1);
     }
 
-    matrix_new(&C, n, n);
-    matrix_new(&R, n - 1, n - 1);
+    C = matrix_new(n, n);
+    R = matrix_new(n - 1, n - 1);
     /* Create n*n Matrix of Minors */
     for (count = 0; count < n * n; count++) {
         row = count / n;
@@ -35,18 +35,18 @@ struct m inverse(const struct m *A)
 		    /* don't copy the current column */
                     if (j != col) {
 			t = matrix_get(A, i, j);
-                        matrix_set(&R, i_count, j_count++, t);
+                        matrix_set(R, i_count, j_count++, t);
 		    }
 		}
                 i_count++;
             }
 	}
         /* transpose by swapping row and column */
-	t = pow(-1, (row & 1) ^ (col & 1)) * determinant(&R) / det;
-	matrix_set(&C, col, row, t);
+	t = pow(-1, (row & 1) ^ (col & 1)) * determinant(R) / det;
+	matrix_set(C, col, row, t);
     }
 
-    matrix_free(&R);
+    matrix_free(R);
     return C;
 }
 
@@ -55,7 +55,7 @@ double determinant(const struct m *A)
     size_t i, j, i_count, j_count, count;
     double det = 0;
     double t;
-    struct m C;
+    struct m *C;
     size_t n = matrix_rows(A);
 
     if (n < 1) {
@@ -72,7 +72,7 @@ double determinant(const struct m *A)
 	return t;
     }
 
-    matrix_new(&C, matrix_cols(A) - 1, matrix_rows(A) - 1);
+    C = matrix_new(matrix_cols(A) - 1, matrix_rows(A) - 1);
 
     for (count = 0; count < n; count++) {
 	/* Creating array of Minors */
@@ -85,28 +85,28 @@ double determinant(const struct m *A)
 		    continue;
 
 		t = matrix_get(A, i, j);
-		matrix_set(&C, i_count, j_count, t);
+		matrix_set(C, i_count, j_count, t);
 		j_count++;
 	    }
 	    i_count++;
 	}
-	det += pow(-1, count) * matrix_get(A, count, 1) * determinant(&C); /* Recursive call */
+	det += pow(-1, count) * matrix_get(A, count, 1) * determinant(C); /* Recursive call */
     }
-    matrix_free(&C);
+    matrix_free(C);
     return det;
 }
 
-struct m multiply(const struct m *A, const struct m *B)
+struct m *multiply(const struct m *A, const struct m *B)
 {
     size_t i, j, k;
-    struct m C;
+    struct m *C;
     size_t row, col;
     double t1, t2;
 
     row = matrix_rows(A);
     col = matrix_cols(B);
 
-    matrix_new(&C, col, row);
+    C = matrix_new(col, row);
 
     /* Multiplying matrix A and B and storing in C */
     for (i = 0; i < row; ++i)
@@ -114,17 +114,17 @@ struct m multiply(const struct m *A, const struct m *B)
             for (k = 0; k < matrix_cols(A); ++k) {
 
 		t1 = matrix_get(A, i, k) * matrix_get(B, k, j);
-		t2 = matrix_get(&C, i, j);
-		matrix_set(&C, i, j, t1 + t2);
+		t2 = matrix_get(C, i, j);
+		matrix_set(C, i, j, t1 + t2);
 	    }
 
     return C;
 }
 
-struct m add(const struct m *A, const struct m *B, double n)
+struct m *add(const struct m *A, const struct m *B, double n)
 {
     size_t i, j;
-    struct m C;
+    struct m *C;
     size_t col, row;
     double t;
 
@@ -137,12 +137,12 @@ struct m add(const struct m *A, const struct m *B, double n)
     col = matrix_cols(A);
     row = matrix_rows(A);
 
-    matrix_new(&C, col, row);
+    C = matrix_new(col, row);
 
     for (i = 0; i < row; i++) {
         for (j = 0; j < col; j++) {
 	    t = matrix_get(A, i, j) + (n * matrix_get(B, i, j));
-	    matrix_set(&C, i, j, t);
+	    matrix_set(C, i, j, t);
 	}
     }
 
@@ -173,30 +173,30 @@ void print_matrix(const struct m *A)
     }
 }
 
-struct m scalar_product(const struct m *A, double scalar)
+struct m *scalar_product(const struct m *A, double scalar)
 {
     size_t i, j;
     double t;
-    struct m R;
+    struct m *R;
     size_t row, col;
 
     row = matrix_rows(A);
     col = matrix_cols(A);
 
-    matrix_new(&R, row, col);
+    R = matrix_new(row, col);
 
     for (i = 0; i < row; i++) {
 	for (j = 0; j < col; j++) {
 	    t = scalar * matrix_get(A, i, j);
-	    matrix_set(&R, i, j, t);
+	    matrix_set(R, i, j, t);
 	}
     }
     return R;
 }
 
-struct m transpose(const struct m *A)
+struct m *transpose(const struct m *A)
 {
-    struct m C;
+    struct m *C;
     size_t i, j;
     size_t row, col;
     double t;
@@ -205,12 +205,12 @@ struct m transpose(const struct m *A)
     row = matrix_cols(A);
     col = matrix_rows(A);
 
-    matrix_new(&C, row, col);
+    C = matrix_new(row, col);
 
     for (i = 0; i < row; i++) {
         for (j = 0; j < col; j++) {
 	    t = matrix_get(A, j, i);
-	    matrix_set(&C, i, j, t);
+	    matrix_set(C, i, j, t);
 	}
     }
 

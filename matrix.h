@@ -8,38 +8,40 @@
 struct m {
     size_t row;
     size_t col;
-    double *data;
+    double data[];
 };
 
-static inline struct m *matrix_new(struct m *M, size_t r, size_t c)
+static inline struct m *matrix_new(size_t r, size_t c)
 {
-	double *t;
-	size_t size = sizeof(double) * r * c;
+	struct m *M;
+	size_t data_size = sizeof(M->data[0]) * r * c;
 
-	t = malloc(size);
-	if (t == NULL)
+	M = malloc(sizeof(*M) + data_size);
+	if (M == NULL)
 		abort();
 
-	memset(t, 0, size);
+	memset(M->data, 0, data_size);
 
-	M->data = t;
 	M->row = r;
 	M->col = c;
 
 	return M;
 }
 
-static inline struct m *matrix_new_data(struct m *M, size_t r, size_t c,
-					double *data)
+static inline struct m *matrix_new_data(size_t r, size_t c, double *data)
 {
-	matrix_new(M, r, c);
+	struct m *M;
+
+	M = matrix_new(r, c);
 	memcpy(M->data, data, sizeof(*M->data) * r * c);
 	return M;
 }
 
 static inline void matrix_free(struct m *M)
 {
-	free(M->data);
+	if (M == NULL)
+		return;
+	free(M);
 }
 
 static inline size_t matrix_rows(const struct m *M)
@@ -84,12 +86,12 @@ static inline bool matrix_is_scalar(const struct m *M)
 	return M->col == 1 && M->row == 1;
 }
 
-struct m add(const struct m *A, const struct m *B, double n);
-struct m multiply(const struct m *A, const struct m *B);
+struct m *add(const struct m *A, const struct m *B, double n);
+struct m *multiply(const struct m *A, const struct m *B);
 void print_matrix(const struct m *A);
-struct m transpose(const struct m *A);
+struct m *transpose(const struct m *A);
 double determinant(const struct m *A);
-struct m scalar_product(const struct m *A, double scalar);
-struct m inverse(const struct m *A);
+struct m *scalar_product(const struct m *A, double scalar);
+struct m *inverse(const struct m *A);
 
 #endif /* _MATRIXLAB_MATRIX_H_ */

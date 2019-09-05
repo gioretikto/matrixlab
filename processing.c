@@ -9,116 +9,120 @@
 #define MAXNMATR 40             /* Max number of matrices */
 #define MAXLINE 500             /* Max lenght of a line */
 
-#define IN_PLACE(op, pelem, ...) do {		\
-	tmp = op(pelem, ## __VA_ARGS__);	\
-	matrix_free(pelem);			\
-	*pelem = tmp;				\
+#define IN_PLACE(op, elem, ...) do {		\
+	tmp = op(elem, ## __VA_ARGS__);	\
+	matrix_free(elem);			\
+	elem = tmp;				\
     } while (0)
 
-static void calculate(struct m *matrix, int nop, int id, char *op)
+static void calculate(struct m *matrix[], int nop, int id, char *op)
 {
 
     int i;
-    struct m tmp;
+    struct m *tmp;
     double d;
 
     for (i = 0; i < nop; i++) {
         /*Transpose the matrices */
         if (op[i] == 't' || op[i] == 'T')
-	    IN_PLACE(transpose, &matrix[0]);
+	    IN_PLACE(transpose, matrix[0]);
 
         else if (op[i] == 'd') {
-            d = determinant(&matrix[i]);
-	    matrix_new_data(&matrix[i], 1, 1, &d);
+            d = determinant(matrix[i]);
+	    tmp = matrix[i];
+	    matrix[i] = matrix_new_data(1, 1, &d);
+	    matrix_free(tmp);
         }
 
         if (op[i] == 'i') {
-            if (matrix_is_square(&matrix[0])) {
+            if (matrix_is_square(matrix[0])) {
                 fprintf(stderr,
 			"Error: You can only calculate the inverse of square matrices\n");
 		abort();
 	    }
-	    IN_PLACE(inverse, &matrix[0]);
+	    IN_PLACE(inverse, matrix[0]);
         }
     }
 
     for (i = 0; i <= nop; i += 2) {
         if (op[i] == '+' && op[i + 1] == '?') {
-            tmp = add(&matrix[i], &matrix[i + 1], +1);
-	    matrix_free(&matrix[i + 1]);
+            tmp = add(matrix[i], matrix[i + 1], +1);
+	    matrix_free(matrix[i + 1]);
             matrix[i + 1] = tmp;
             break;
         }
 
         else if (op[i] == '*' && op[i + 1] == '?') {
-            if (matrix[i].row == 1 && matrix[i].col == 1)
+            if (matrix_is_scalar(matrix[i]))
 		/* Multiplication of Scalar per matrix */
-		IN_PLACE(scalar_product, &matrix[i + 1], matrix[i].data[0]);
+		IN_PLACE(scalar_product,
+			 matrix[i + 1],
+			 matrix_get(matrix[i], 0, 0));
             else {
-                tmp = multiply(&matrix[i], &matrix[i + 1]);
-		matrix_free(&matrix[i + 1]);
+                tmp = multiply(matrix[i], matrix[i + 1]);
+		matrix_free(matrix[i + 1]);
                 matrix[i + 1] = tmp;
             }
             break;
         }
 
         else if (op[i] == '-' && op[i + 1] == '?') {
-            tmp = add(&matrix[i], &matrix[i + 1], -1);
-	    matrix_free(&matrix[i + 1]);
+            tmp = add(matrix[i], matrix[i + 1], -1);
+	    matrix_free(matrix[i + 1]);
             matrix[i + 1] = tmp;
             break;
         }
 
         else if (op[i] == '*' && op[i + 1] == '+') {
-            if (matrix_is_scalar(&matrix[i]))
+            if (matrix_is_scalar(matrix[i]))
 		/* Multiplication of Scalar per matrix */
 		IN_PLACE(scalar_product,
-			 &matrix[i + 1],
-			 matrix_get(&matrix[i], 0, 0));
+			 matrix[i + 1],
+			 matrix_get(matrix[i], 0, 0));
             else {
 		tmp = matrix[i + 1];
-                matrix[i + 1] = multiply(&matrix[i], &matrix[i + 1]);
-		matrix_free(&tmp);
+                matrix[i + 1] = multiply(matrix[i], matrix[i + 1]);
+		matrix_free(tmp);
 
 		tmp = matrix[i + 2];
-                matrix[i + 2] = add(&matrix[i + 1], &matrix[i + 2], +1);
-		matrix_free(&tmp);
+                matrix[i + 2] = add(matrix[i + 1], matrix[i + 2], +1);
+		matrix_free(tmp);
             }
         }
 
         else if (op[i] == '+' && op[i + 1] == '*') {
-            tmp = multiply(&matrix[i + 1], &matrix[i + 2]);
-            matrix_free(&matrix[i + 1]);
+            tmp = multiply(matrix[i + 1], matrix[i + 2]);
+            matrix_free(matrix[i + 1]);
             matrix[i + 1] = tmp;
 
-            tmp = add(&matrix[i], &matrix[i + 1], +1);
-            matrix_free(&matrix[i + 2]);
+            tmp = add(matrix[i], matrix[i + 1], +1);
+            matrix_free(matrix[i + 2]);
             matrix[i + 2] = tmp;
         }
 
         else if (op[i] == '+' && op[i + 1] == '+') {
-            tmp = add(&matrix[i], &matrix[i + 1], +1);
-            matrix_free(&matrix[i + 1]);
+            tmp = add(matrix[i], matrix[i + 1], +1);
+            matrix_free(matrix[i + 1]);
             matrix[i + 1] = tmp;
 
-            tmp = add(&matrix[i], &matrix[i + 2], +1);
-            matrix_free(&matrix[i + 2]);
+            tmp = add(matrix[i], matrix[i + 2], +1);
+            matrix_free(matrix[i + 2]);
             matrix[i + 2] = tmp;
         }
 
         else if (op[i] == '-' && op[i + 1] == '*') {
-            tmp = multiply(&matrix[i + 1], &matrix[i + 2]);
-            matrix_free(&matrix[i + 1]);
+            tmp = multiply(matrix[i + 1], matrix[i + 2]);
+            matrix_free(matrix[i + 1]);
             matrix[i + 1] = tmp;
 
-            tmp = add(&matrix[i], &matrix[i + 1], -1);
-            matrix_free(&matrix[i + 2]);
+            tmp = add(matrix[i], matrix[i + 1], -1);
+            matrix_free(matrix[i + 2]);
             matrix[i + 2] = tmp;
         }
     }
 
     printf("=\n");
-    print_matrix(&matrix[id]);  /*Print the result */
+    print_matrix(matrix[id]);  /*Print the result */
 }
 
 struct matrix_state {
@@ -169,17 +173,20 @@ static void matrix_parse_line(struct matrix_state *s, char *str)
     matrix_parse_row(s, str);
 }
 
-static bool matrix_parse_end(struct matrix_state *s, struct m *M)
+static bool matrix_parse_end(struct matrix_state *s, struct m **M)
 {
+    struct m *m;
+
     if (!s->started)
 	return false;
 
-    matrix_new_data(M, s->row, s->col, s->buf);
+    m = matrix_new_data(s->row, s->col, s->buf);
     s->started = false;
+    *M = m;
     return true;
 }
 
-static bool matrix_parse_end_all(struct matrix_state *s, struct m *M)
+static bool matrix_parse_end_all(struct matrix_state *s, struct m **M)
 {
     bool rc;
 
@@ -196,17 +203,17 @@ static bool is_operator_line(char *buf)
 
 void read_file(int maxc, FILE *fp)
 {
-    struct m matrix[MAXNMATR];
+    struct m *matrix[MAXNMATR];
     int id;                     /* id of a matrix */
     int nop = 0;                /* No of operators */
     int i;
     char buf[MAXLINE];          /* to store each lines of file */
     char op[MAXNOP];
     struct matrix_state parse_state;
-    struct m tmp;
+    struct m *tmp;
 
-    for (i = 0; i < MAXNOP; i++)
-        op[i] = '?';
+    memset(matrix, 0, sizeof(matrix));
+    memset(op, '?', sizeof(op));
 
     matrix_parse_init(&parse_state, maxc);
     id = 0;
@@ -259,12 +266,12 @@ void read_file(int maxc, FILE *fp)
 
         if (op[i] == 'd') {
             printf("det\n");
-            print_matrix(&matrix[i]);
+            print_matrix(matrix[i]);
 	    continue;
         }
 
         if (op[i] == '*' || op[i] == '-' || op[i] == '+') {
-            print_matrix(&matrix[i]);
+            print_matrix(matrix[i]);
             if (i > 0 &&
 		(op[i - 1] == 'i' || op[i - 1] == 'T' || op[i - 1] == 't'))
                 continue;
@@ -274,7 +281,7 @@ void read_file(int maxc, FILE *fp)
         }
 
         if (op[i] == 't' || op[i] == 'T') {
-            print_matrix(&matrix[i]);
+            print_matrix(matrix[i]);
             printf("^T\n");
             if (op[i + 1] != '?')
                 printf("%c\n", op[i + 1]);
@@ -282,7 +289,7 @@ void read_file(int maxc, FILE *fp)
         }
 
         if (op[i] == 'i') {
-            print_matrix(&matrix[i]);
+            print_matrix(matrix[i]);
             printf("^-1\n");    /* matrix inverse operation */
             if (op[i + 1] != '?')
                 printf("%c\n", op[i + 1]);
@@ -290,12 +297,12 @@ void read_file(int maxc, FILE *fp)
         }
 
         if (op[i] == '?') {
-            print_matrix(&matrix[i]);
+            print_matrix(matrix[i]);
         }
     }
 
     calculate(matrix, nop, id, op);
 
     for (i = 0; i <= id; i++)
-        matrix_free(&matrix[i]);
+        matrix_free(matrix[i]);
 }
