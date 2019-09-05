@@ -65,6 +65,12 @@ static inline bool matrix_is_square(const struct m *M)
 	return M->row == M->col;
 }
 
+static inline bool matrix_is_same_size(const struct m *M1,
+				       const struct m *M2)
+{
+	return (M1->row == M2->row) && (M1->col == M2->col);
+}
+
 struct m add(const struct m *A, const struct m *B, double n);
 struct m multiply(const struct m *A, const struct m *B);
 void print_matrix(struct m *A);
