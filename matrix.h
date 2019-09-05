@@ -79,6 +79,11 @@ static inline bool matrix_is_same_size(const struct m *M1,
 	return (M1->row == M2->row) && (M1->col == M2->col);
 }
 
+static inline bool matrix_is_scalar(const struct m *M)
+{
+	return M->col == 1 && M->row == 1;
+}
+
 struct m add(const struct m *A, const struct m *B, double n);
 struct m multiply(const struct m *A, const struct m *B);
 void print_matrix(const struct m *A);

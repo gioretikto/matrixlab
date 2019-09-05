@@ -20,6 +20,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 
     int i;
     struct m tmp;
+    double d;
 
     for (i = 0; i < nop; i++) {
         /*Transpose the matrices */
@@ -27,15 +28,16 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 	    IN_PLACE(transpose, &matrix[0]);
 
         else if (op[i] == 'd') {
-            matrix[i].data[0] = determinant(&matrix[i]);
-            matrix[i].row = 1;
-            matrix[i].col = 1;
+            d = determinant(&matrix[i]);
+	    matrix_new_data(&matrix[i], 1, 1, &d);
         }
 
         if (op[i] == 'i') {
-            if (matrix[0].row != matrix[0].col)
-                printf
-                    ("Error: You can only calculate the inverse of square matrices\n");
+            if (matrix_is_square(&matrix[0])) {
+                fprintf(stderr,
+			"Error: You can only calculate the inverse of square matrices\n");
+		abort();
+	    }
 	    IN_PLACE(inverse, &matrix[0]);
         }
     }
@@ -43,7 +45,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
     for (i = 0; i <= nop; i += 2) {
         if (op[i] == '+' && op[i + 1] == '?') {
             tmp = add(&matrix[i], &matrix[i + 1], +1);
-            free(matrix[i + 1].data);
+	    matrix_free(&matrix[i + 1]);
             matrix[i + 1] = tmp;
             break;
         }
@@ -54,7 +56,7 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 		IN_PLACE(scalar_product, &matrix[i + 1], matrix[i].data[0]);
             else {
                 tmp = multiply(&matrix[i], &matrix[i + 1]);
-                free(matrix[i + 1].data);
+		matrix_free(&matrix[i + 1]);
                 matrix[i + 1] = tmp;
             }
             break;
@@ -62,53 +64,55 @@ static void calculate(struct m *matrix, int nop, int id, char *op)
 
         else if (op[i] == '-' && op[i + 1] == '?') {
             tmp = add(&matrix[i], &matrix[i + 1], -1);
-            free(matrix[i + 1].data);
+	    matrix_free(&matrix[i + 1]);
             matrix[i + 1] = tmp;
             break;
         }
 
         else if (op[i] == '*' && op[i + 1] == '+') {
-            if (matrix[i].row == 1 && matrix[i].col == 1)
+            if (matrix_is_scalar(&matrix[i]))
 		/* Multiplication of Scalar per matrix */
-		IN_PLACE(scalar_product, &matrix[i + 1], matrix[i].data[0]);
+		IN_PLACE(scalar_product,
+			 &matrix[i + 1],
+			 matrix_get(&matrix[i], 0, 0));
             else {
 		tmp = matrix[i + 1];
                 matrix[i + 1] = multiply(&matrix[i], &matrix[i + 1]);
-		free(tmp.data);
+		matrix_free(&tmp);
 
 		tmp = matrix[i + 2];
                 matrix[i + 2] = add(&matrix[i + 1], &matrix[i + 2], +1);
-		free(tmp.data);
+		matrix_free(&tmp);
             }
         }
 
         else if (op[i] == '+' && op[i + 1] == '*') {
             tmp = multiply(&matrix[i + 1], &matrix[i + 2]);
-            free(matrix[i + 1].data);
+            matrix_free(&matrix[i + 1]);
             matrix[i + 1] = tmp;
 
             tmp = add(&matrix[i], &matrix[i + 1], +1);
-            free(matrix[i + 2].data);
+            matrix_free(&matrix[i + 2]);
             matrix[i + 2] = tmp;
         }
 
         else if (op[i] == '+' && op[i + 1] == '+') {
             tmp = add(&matrix[i], &matrix[i + 1], +1);
-            free(matrix[i + 1].data);
+            matrix_free(&matrix[i + 1]);
             matrix[i + 1] = tmp;
 
             tmp = add(&matrix[i], &matrix[i + 2], +1);
-            free(matrix[i + 2].data);
+            matrix_free(&matrix[i + 2]);
             matrix[i + 2] = tmp;
         }
 
         else if (op[i] == '-' && op[i + 1] == '*') {
             tmp = multiply(&matrix[i + 1], &matrix[i + 2]);
-            free(matrix[i + 1].data);
+            matrix_free(&matrix[i + 1]);
             matrix[i + 1] = tmp;
 
             tmp = add(&matrix[i], &matrix[i + 1], -1);
-            free(matrix[i + 2].data);
+            matrix_free(&matrix[i + 2]);
             matrix[i + 2] = tmp;
         }
     }
@@ -293,5 +297,5 @@ void read_file(int maxc, FILE *fp)
     calculate(matrix, nop, id, op);
 
     for (i = 0; i <= id; i++)
-        free(matrix[i].data);
+        matrix_free(&matrix[i]);
 }
