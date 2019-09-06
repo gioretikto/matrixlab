@@ -44,7 +44,7 @@ static double determinant_int(const struct m *A)
 	    }
 	    i_count++;
 	}
-	det += pow(-1, count) * matrix_get(A, count, 1) * determinant_int(C); /* Recursive call */
+	det += pow(-1, count) * matrix_get(A, 0, count) * determinant_int(C); /* Recursive call */
     }
     matrix_free(C);
     return det;
