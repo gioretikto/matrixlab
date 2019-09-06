@@ -1,9 +1,5 @@
-/* Freelab
+/* Matrixlab
  *
- * Authors:
- *      Giovanni Resta <giovanniresta87@gmail.com>
- *
- * Copyright (C) 2019 Giovanni Resta
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -25,16 +21,37 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
+#include <errno.h>
+#include <string.h>
 #include "functions.h"
+#define DEFAULT_FILE stdin
+#define DEFAULT_DIMENSION 100
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
     
-    FILE *file = argc > 1 ? fopen(argv[1], "rb") : stdin;
-   
-    /*define max dimension of a matrix */
-    int maxc = argc>2?atoi(argv[2])*atoi(argv[2]):100;
-    
-    read_file(maxc, file);       
- 
+    FILE *file = DEFAULT_FILE;
+    int maxc = DEFAULT_DIMENSION;
+
+    if (argc > 1) {
+		file = fopen(argv[1], "rb");
+		if (file == NULL) {
+	    	fprintf(stderr, "Could not open input file %s: %s\n", argv[1], strerror(errno));
+	    	return 1;
+		}
+    }
+
+    if (argc > 2) {
+		int tmp;
+		tmp = atoi(argv[2]) * atoi(argv[2]);
+		if (tmp == 0) {
+	   		fprintf(stderr, "Wrong dimension %s\n", argv[2]);
+	    	fclose(file);
+	    	return 1;
+		}
+		maxc = tmp;
+    }
+
+    read_file(maxc, file);
     return 0;
 }
