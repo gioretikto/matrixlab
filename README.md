@@ -1,4 +1,4 @@
-# matrixlab
+# Matrixlab v. 0.2
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -50,23 +50,12 @@ det
 1 5 7
 </pre>
 
-CONTRIBUTIONS:
+<h2>Coming in the next update</h2>
 
-For the next version I'd like to perform also symbolic operation of the kind:
+For the next version I'd like the program to perform also symbolic operation, like:
 
-<pre>
-cos x sin x
-cos x 5
-*
-1 0
-0 1
-=
-cos x sin x
-cos x 5
-</pre>
-
-and also assigment such as:
-
+<ul>
+<li><p>Inizialization of matrices:</p>
 <pre>
 A=
 1 1
@@ -78,3 +67,23 @@ B=
 
 A*B
 </pre>
+</li>
+
+<li><p>evaluation of algebraic expressions</p>
+
+<pre>
+cos x sin x
+cos x 5
+*
+1 0
+0 1
+=
+cos x sin x
+cos x 5
+</pre>
+</li>
+</ul>
+
+<h3>Contacts</h3>
+
+You can reach me on the freenode IRC channel #cansi
