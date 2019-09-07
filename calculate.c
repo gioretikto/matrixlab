@@ -31,9 +31,16 @@ void calculate(struct m *matrix, int nop, int id, char *op){
             break;
          }
          
-         else if(op[i] == '*' && op[i+1] == '?'){
+        if (op[i] == '-' && op[i+1] == '?'){
+			struct m tmp = add(&matrix[i],&matrix[i+1],-1);
+			free(matrix[i+1].data);
+			matrix[i+1] = tmp;
+            break;
+         }
+         
+        if(op[i] == '*' && op[i+1] == '?'){
              if (matrix[i].row == 1 && matrix[i].col == 1)
-                 scalar_product(matrix[i].data[0], &matrix[i+1]); //Multiplication of Scalar per matrix
+                 scalar_product(matrix[i].data[0], &matrix[i+1]);  /* Multiplication of Scalar per matrix */
              else{
 				struct m tmp = multiply(&matrix[i], &matrix[i+1]);
 				free(matrix[i+1].data);
@@ -41,17 +48,10 @@ void calculate(struct m *matrix, int nop, int id, char *op){
              }
              break;
          }
-         
-         else if (op[i] == '-' && op[i+1] == '?'){
-			struct m tmp = add(&matrix[i],&matrix[i+1],-1);
-			free(matrix[i+1].data);
-			matrix[i+1] = tmp;
-            break;
-         }
        
          else if(op[i] == '*' && op[i+1] == '+'){
              if (matrix[i].row == 1 && matrix[i].col == 1)
-                 scalar_product(matrix[i].data[0],&matrix[i+1]); //Multiplication of Scalar per matrix
+                 scalar_product(matrix[i].data[0],&matrix[i+1]);    /* Multiplication of Scalar per matrix*/
              else{
              	 struct m tmp = multiply(&matrix[i], &matrix[i+1]);
              	 free(matrix[i+1].data);
@@ -78,9 +78,9 @@ void calculate(struct m *matrix, int nop, int id, char *op){
 			 free(matrix[i+1].data);
 			 matrix[i+1] = tmp;
 
-			 tmp = add(&matrix[i],&matrix[i+2],+1);
+			 tmp = add(&matrix[i+1],&matrix[i+2],+1);
 			 free(matrix[i+2].data);
-			 matrix[i+2] = tmp;
+			 matrix[i+2] = tmp;			 
          }
          
          else if (op[i] == '-' && op[i+1] == '*'){
