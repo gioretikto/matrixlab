@@ -4,7 +4,54 @@
 #include <math.h>
 #include "functions.h"
 
-struct m multiply(const struct m *A, const struct m *B) 
+void print_result(struct m *matrix, struct operator *op){
+    
+    int i;
+    
+    /* Printing the matrices and operations */
+    for(i=0; i <= op->id; i++){
+                     
+        if(op->symbol[i] == 'd'){
+            printf("det\n");
+            print_matrix(&matrix[i]);
+            continue;
+        }
+        
+        if (op->symbol[i] == '*' || op->symbol[i] == '-' || op->symbol[i] == '+')
+        {
+            print_matrix(&matrix[i]);
+            if( i > 0 && (op->symbol[i - 1] == 'i' || op->symbol[i - 1] == 'T' || op->symbol[i - 1] == 't'))
+                continue;
+            else
+                printf("%c\n", op->symbol[i]);
+        }
+        
+         if (op->symbol[i] == 't' || op->symbol[i] == 'T'){            
+             print_matrix(&matrix[i]);
+             printf("^T\n");
+             if(op->symbol[i+1] != '?')
+                printf("%c\n", op->symbol[i+1]);
+             continue;
+        }
+        
+         if (op->symbol[i] == 'i'){
+            print_matrix(&matrix[i]);
+            printf("^-1\n"); 	/* matrix inverse operation */
+            if(op->symbol[i+1] != '?')
+                printf("%c\n", op->symbol[i+1]);
+            continue;
+        }
+        
+         if(op->symbol[i] == '?'){
+             print_matrix(&matrix[i]);
+        }        
+    }
+    
+    calculate(matrix, op);
+}
+
+
+struct m multiply(struct m *A, struct m *B) 
 { 
     size_t i, j, k;
     struct m C;
@@ -17,7 +64,7 @@ struct m multiply(const struct m *A, const struct m *B)
         for (j=0; j < C.col; j++)
             C.data[i * C.col + j] = 0;
  
-    // Multiplying matrix A and B and storing in C.
+    /* Multiplying matrix A and B and storing in C */
     for(i = 0; i < A->row; ++i)
         for(j = 0; j < B->col; ++j)
             for(k=0; k < A->col; ++k)
@@ -26,7 +73,7 @@ struct m multiply(const struct m *A, const struct m *B)
     return C;
 }
 
-struct m add(const struct m *A, const struct m *B, double n) 
+struct m add(struct m *A, struct m *B, double n) 
 { 
     if ( (A->row != B->row) || (A->col != B->col) ){
         printf("Error: You can't sum up matrix of different dimension\n");
