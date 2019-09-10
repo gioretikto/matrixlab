@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 		if (file == NULL) {
 	    	fprintf(stderr, "Could not open input file %s: %s\n",
 		    argv[1], strerror(errno));
-	    	return 1;
+	    	return EXIT_FAILURE;
 		}
     }
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 		if (tmp == 0) {
 	   		fprintf(stderr, "Wrong dimension %s\n", argv[2]);
 	    	fclose(file);
-	    	return 1;
+	    	return EXIT_FAILURE;
 		}
 		maxc = tmp;
     }
