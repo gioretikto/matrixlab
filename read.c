@@ -14,7 +14,7 @@ void read_file(int maxc, FILE *fp)
     int off = 0;
     int i;
     int n;
-    double *d;
+    double *d = NULL;
     char buf[MAXLINE]; 			/* to store each lines of file */
     char *p = buf;
     
@@ -26,19 +26,19 @@ void read_file(int maxc, FILE *fp)
             op.symbol[i] = '?';    
    
     /*Read file line by line */
-    while (fgets (buf, MAXLINE, fp)){
+    while (fgets (buf, MAXLINE, fp)){ 
         
-        if (strcmp(buf, "^-1\n") == 0){
+        if (strncmp(buf, "^-1", 3) == 0){
                 op.symbol[op.nop++] = 'i'; 	/* matrix inverse operation */
                 continue;
         }
         
-        if (strcmp(buf, "^T\n") == 0 || strcmp(buf, "^t\n") == 0){
-                op.symbol[op.nop++] = 't'; 	/* matrix inverse operation */
+        if (strncmp(buf, "^T", 2) == 0 || strncmp(buf, "^t\n",2) == 0){
+                op.symbol[op.nop++] = 't'; 	/* matrix transpose operation */
                 continue;
         }
             
-        if (strcmp(buf, "det\n") == 0){
+        if (strncmp(buf, "det", 3) == 0){
                 op.symbol[op.nop++] = 'd'; 	/* determinant operation */
                 continue;
         }
@@ -79,8 +79,9 @@ void read_file(int maxc, FILE *fp)
     
     if (op.nop == 0) {
         fprintf(stderr, "Nothing to do\n");
+        printf("%c\n", op.symbol[0]);
         exit(1);
     }
     
-    print_result(matrix, &op);
+    display_data(matrix, &op);
 }

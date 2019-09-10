@@ -4,7 +4,7 @@
 #include <math.h>
 #include "functions.h"
 
-void print_result(struct m *matrix, struct operator *op){
+void display_data(struct m *matrix, struct operator *op){
     
     int i;
     
@@ -141,5 +141,6 @@ void transpose(struct m *A)
     for (i = 0; i < C.row; i++) 
         for (j = 0; j < C.col; j++) 
             C.data[i * C.col + j] = A->data[j * A->col  + i];
+    free(A->data);
     *A = C;
 }

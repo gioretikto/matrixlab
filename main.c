@@ -36,7 +36,8 @@ int main(int argc, char *argv[])
     if (argc > 1) {
 		file = fopen(argv[1], "rb");
 		if (file == NULL) {
-	    	fprintf(stderr, "Could not open input file %s: %s\n", argv[1], strerror(errno));
+	    	fprintf(stderr, "Could not open input file %s: %s\n",
+		    argv[1], strerror(errno));
 	    	return 1;
 		}
     }
@@ -53,5 +54,4 @@ int main(int argc, char *argv[])
     }
 
     read_file(maxc, file);
-    return 0;
 }

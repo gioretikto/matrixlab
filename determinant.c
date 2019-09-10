@@ -5,7 +5,7 @@
 
 double determinant(size_t n, struct m *A)
 {                                    
-    size_t i,j,i_count,j_count, count=0;
+    size_t i, j, i_count, j_count, count=0;
     
     double det = 0;
  
@@ -29,7 +29,7 @@ double determinant(size_t n, struct m *A)
         
         for(count=0; count < n; count++)
         {
-            //Creating array of Minors
+            /* Creating array of Minors*/
             i_count = 0;
             for(i = 1; i < n; i++)
             {
@@ -37,13 +37,13 @@ double determinant(size_t n, struct m *A)
                 for(j = 0; j < n; j++)
                 {
                     if(j == count)
-                        continue; // don't copy the minor column element
+                        continue; /* don't copy the minor column element */
                     C.data[i_count * C.col + j_count] = A->data[i * A->col + j];
                     j_count++;
                 }
                 i_count++;
             }
-            det += pow(-1, count) * A->data[count] * determinant(n-1,&C);//Recursive call
+            det += pow(-1, count) * A->data[count] * determinant(n-1,&C); /*Recursive call */
         }
         free(C.data);
         return det;

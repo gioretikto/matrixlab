@@ -23,7 +23,7 @@ struct operator{
      int id;					/* No of matrix read*/
 };
 
-void print_result(struct m *matrix, struct operator *op);
+void display_data(struct m *matrix, struct operator *op);
 void calculate(struct m *matrix, struct operator *op);
 struct m add(struct m *A, struct m *B, double n);
 struct m multiply(struct m *A, struct m *B);

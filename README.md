@@ -38,8 +38,10 @@ Execute with the following command:
 in the example above run:
 
 	./matrixlab matrix 3
+	
+In addition to multiplications, additions, and subtractions, matrixlab can also perform: 
 
-Matrix Determinant Calculation
+Determinant Calculation
 --------------------------------
 To calculate the determinant format the input file thus:
 
@@ -49,6 +51,24 @@ det
 2 -1 2
 1 5 7
 </pre>
+
+Transpositions
+-------------------
+<pre>
+1 -2 4 
+3 0 -5 
+^T
+</pre>
+
+Inverse of a matrix:
+---------------------
+
+4 -3 0
+2 -1 2
+1 5 7
+^-1
+
+
 
 <h2>Coming in the next update</h2>
 
