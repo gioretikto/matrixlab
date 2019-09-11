@@ -19,26 +19,74 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <math.h>
 #include <errno.h>
-#include <string.h>
+#include <getopt.h>
 #include "functions.h"
 #define DEFAULT_FILE stdin
 #define DEFAULT_DIMENSION 100
+
+static struct option long_options[] = {
+		/* Options without arguments */
+		{"help",        no_argument,       NULL, 'h'},
+		{"version",     no_argument,       NULL, 'V'},
+		{"random",      no_argument,       NULL, 'r'},
+		{"endding",     no_argument,       NULL, 'e'},
+		{"another",     no_argument,       NULL, 'a'},
+		{"show",        no_argument,       NULL, 's'},
+		{"another_any", no_argument,       NULL, 'A'},
+		{NULL, 0, NULL, 0}
+	};
+
+static void
+print_help (void)
+{
+	printf ("Matrixlab %s\n"
+		"Usage: matrixlab path_to_file dimension\n\n"
+		"  -h,  --help                   Print this help\n"
+		"  -V,  --version                Print version and exit\n"
+		"Report bugs to https://github.com/gioretikto/matrixlab\n", VERSION);
+}
 
 int main(int argc, char *argv[])
 {
     
     FILE *file = DEFAULT_FILE;
     int maxc = DEFAULT_DIMENSION;
+    int val;
+    
+    /* Read the parameters */
+	while ((val = getopt_long (argc, argv, "VasArehlm:", long_options, NULL)) != -1) {
+		switch (val) {
+		case 'v':
+		case 'V':
+			printf ("Matrixlab 0.4 \n"
+				"Written by gioretikto \n\n"
+				"Copyright (C) 2003 Free Software Foundation, Inc.\n"
+				"This is free software; see the source for copying conditions. There is NO\n"
+				"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+				);
+			exit(0);
+			break;
+		case 'h':
+		case '?':
+		default:
+			print_help();
+			exit(0);
+			break;
+		}
+	}
+	
+	if (argc == 1) {
+			print_help();
+	    	return 1;
+    }
 
     if (argc > 1) {
 		file = fopen(argv[1], "rb");
 		if (file == NULL) {
 	    	fprintf(stderr, "Could not open input file %s: %s\n",
 		    argv[1], strerror(errno));
-	    	return EXIT_FAILURE;
+	    	return 1;
 		}
     }
 
@@ -48,7 +96,7 @@ int main(int argc, char *argv[])
 		if (tmp == 0) {
 	   		fprintf(stderr, "Wrong dimension %s\n", argv[2]);
 	    	fclose(file);
-	    	return EXIT_FAILURE;
+	    	return 1;
 		}
 		maxc = tmp;
     }

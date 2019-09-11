@@ -5,9 +5,10 @@
 #include <math.h>
 #include <string.h>
 
-#define MAXNOP 20 				/*Max number of operations allowed */
-#define MAXNMATR 40 			/*Max number of matrices */
-#define MAXLINE 500 			/*Max lenght of a line */
+#define VERSION "0.4"			/* This program  version*/
+#define MAXNOP 20 				/* Max number of operations allowed */
+#define MAXNMATR 40 			/* Max number of matrices */
+#define MAXLINE 500 			/* Max lenght of a line */
 #define DEFAULT_DIMENSION 100
 #define DEFAULT_FILE stdin
 
