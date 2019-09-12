@@ -29,12 +29,6 @@ static struct option long_options[] = {
 		/* Options without arguments */
 		{"help",        no_argument,       NULL, 'h'},
 		{"version",     no_argument,       NULL, 'V'},
-		{"random",      no_argument,       NULL, 'r'},
-		{"endding",     no_argument,       NULL, 'e'},
-		{"another",     no_argument,       NULL, 'a'},
-		{"show",        no_argument,       NULL, 's'},
-		{"another_any", no_argument,       NULL, 'A'},
-		{NULL, 0, NULL, 0}
 	};
 
 static void
@@ -61,7 +55,6 @@ int main(int argc, char *argv[])
 		case 'V':
 			printf ("Matrixlab 0.4 \n"
 				"Written by gioretikto \n\n"
-				"Copyright (C) 2003 Free Software Foundation, Inc.\n"
 				"This is free software; see the source for copying conditions. There is NO\n"
 				"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 				);
@@ -76,7 +69,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	
-	if (argc == 1) {
+	 if (argc == 1) {
 			print_help();
 	    	return 1;
     }
@@ -93,6 +86,7 @@ int main(int argc, char *argv[])
     if (argc > 2) {
 		int tmp;
 		tmp = atoi(argv[2]) * atoi(argv[2]);
+		
 		if (tmp == 0) {
 	   		fprintf(stderr, "Wrong dimension %s\n", argv[2]);
 	    	fclose(file);
@@ -100,6 +94,5 @@ int main(int argc, char *argv[])
 		}
 		maxc = tmp;
     }
-
     read_file(maxc, file);
 }
