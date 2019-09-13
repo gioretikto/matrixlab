@@ -73,13 +73,21 @@ void print_matrix(struct m *A){
     }
 }
 
-void scalar_product(double scalar, struct m *B)
+struct m scalar_product(double scalar, struct m *A)
 {
-     size_t i,j;
+    size_t i, j;
      
-     for(i=0; i < B->row; i++)
-        for(j=0; j < B->col; j++)
-           B->data[i * B->col + j] = scalar * B->data[i * B->col + j];
+    struct m C;
+    C.data = malloc(sizeof(double) * A->row * A->col);
+ 
+    C.row = A->col;
+    C.col = A->row;
+     
+    for(i=0; i < C.row; i++)
+       for(j=0; j < C.col; j++)
+          C.data[i * C.col + j] = scalar * A->data[i * A->col + j];
+          
+    return C;
 }
 
 void transpose(struct m *A)

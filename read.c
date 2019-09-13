@@ -62,7 +62,7 @@ void read_file(int maxc, FILE *fp)
             continue;
         }
         
-   		if(check < maxc){
+   		if(isdigit(*buf) && (check < maxc) ){
 		    /* read numbers in a line into d */
 		    while (sscanf (buf + off, "%lf%n", d, &n) == 1) {
 					if(check != maxc-1)
@@ -72,10 +72,9 @@ void read_file(int maxc, FILE *fp)
 				    off += n;
 				    check++;
 		   }
+		    nrow++;
+	        off = 0;
         }
-        
-        nrow++;
-        off = 0;
     }			/* end of while fgets cycle */
     
 	fclose(fp);

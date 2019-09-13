@@ -1,4 +1,4 @@
-/* Matrixlab
+/* Matrixlab 0.4
  *
  *
  * This program is free software; you can redistribute it and/or
@@ -29,7 +29,7 @@ static struct option long_options[] = {
 		/* Options without arguments */
 		{"help",        no_argument,       NULL, 'h'},
 		{"version",     no_argument,       NULL, 'V'},
-	};
+};
 
 static void
 print_help (void)
