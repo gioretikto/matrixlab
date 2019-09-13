@@ -35,3 +35,4 @@ void transpose(struct m *A);
 double determinant(size_t n, struct m *A);
 void inverse(size_t n, struct m *A);
 void read_file(int maxc, FILE *fp);
+struct m make_struct(size_t rows, size_t cols);
