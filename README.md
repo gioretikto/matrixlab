@@ -63,10 +63,32 @@ Transpositions
 Inverse of a matrix:
 ---------------------
 
+<pre>
 4 -3 0
 2 -1 2
 1 5 7
 ^-1
+</pre>
+
+
+Some other complex calculation matrixlab can do
+-------------------------------------------------
+
+2
+*
+5 6 7
+8 9 8
+1 2 3
+det
+1 0 0
+0 1 0
+0 0 1
++
+1 1 1
+1 1 1
+1 1 1
+
+./matrixlab matrix 3
 
 
 
