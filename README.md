@@ -74,6 +74,7 @@ Inverse of a matrix:
 Some other complex calculation matrixlab can do
 -------------------------------------------------
 
+<pre>
 2
 *
 5 6 7
@@ -87,9 +88,9 @@ det
 1 1 1
 1 1 1
 1 1 1
+</pre>
 
-./matrixlab matrix 3
-
+<p>Execture command: ./matrixlab matrix 3</p>
 
 
 <h2>Coming in the next update</h2>
