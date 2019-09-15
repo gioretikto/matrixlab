@@ -26,7 +26,7 @@ struct operator{
 
 void display_data(struct m *matrix, struct operator *op);
 void calculate(struct m *matrix, struct operator *op);
-struct m add(struct m *A, struct m *B, double n);
+struct m add(struct m *A, struct m *B, const char c);
 struct m multiply(struct m *A, struct m *B);
 struct m scalar_product(double scalar, struct m *B);
 void f(double x);
@@ -36,3 +36,4 @@ double determinant(size_t n, struct m *A);
 void inverse(size_t n, struct m *A);
 void read_file(int maxc, FILE *fp);
 struct m make_struct(size_t rows, size_t cols);
+void copy_matrix(struct m *A, struct m *tmp);

@@ -23,20 +23,28 @@ struct m multiply(struct m *A, struct m *B)
     return C;
 }
 
-struct m add(struct m *A, struct m *B, double n) 
+struct m add(struct m *A, struct m *B, const char c) 
 { 
-    if ( (A->row != B->row) || (A->col != B->col) ){
-        printf("Error: You can't sum up matrix of different dimension\n");
-        exit(1);
-    }    
+    if ((A->row != B->row) || (A->col != B->col)){
+       		 printf("Matrixlab Error: You can't sum up matrix of different dimension\n");
+        	 exit(1);
+    }
     
     size_t i, j;
     
-    struct m C  = make_struct(A->row, B->col);
+    double n = 0;
+    
+    if (c == '+')
+    	n = 1;
+    	
+    else if (c == '-')
+    	n = -1;
+    
+    struct m C = make_struct(A->row, B->col);
     
     for (i=0; i < C.row; i++)
       for (j=0; j < C.col; j++)
-        C.data[i * C.col + j] = A->data[i * A->col + j] + n *B->data[i * B->col + j];
+        C.data[i * C.col + j] = A->data[i * A->col + j] + n * B->data[i * B->col + j];
         
     return C;
 }
@@ -181,4 +189,10 @@ double determinant(size_t n, struct m *A)
         free(C.data);
         return det;
     }
+}
+
+void copy_matrix(struct m *A, struct m *tmp){
+
+		free(A->data);
+		*A = *tmp;		
 }
