@@ -110,7 +110,7 @@ Execture command: ./matrixlab matrix 3
 
 <h3>Coming in the next update</h3>
 
-We're trying to implement a new functionality in order to perform also symbolic operation, like:
+We're trying to implement a new functionality in order to perform also symbolic operations, like:
 
 evaluation of algebraic expressions
 
