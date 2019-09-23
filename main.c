@@ -42,57 +42,53 @@ print_help (void)
 }
 
 int main(int argc, char *argv[])
-{
-    
+{    
     FILE *file = DEFAULT_FILE;
-    int maxc = DEFAULT_DIMENSION;
+    int arg_dim = DEFAULT_DIMENSION;
     int val;
     
     /* Read the parameters */
-	while ((val = getopt_long (argc, argv, "VasArehlm:", long_options, NULL)) != -1) {
-		switch (val) {
-		case 'v':
-		case 'V':
-			printf ("Matrixlab 0.4 \n"
-				"Written by gioretikto \n\n"
-				"This is free software; see the source for copying conditions. There is NO\n"
-				"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
-				);
-			exit(0);
-			break;
-		case 'h':
-		case '?':
-		default:
-			print_help();
-			exit(0);
-			break;
-		}
-	}
-	
-	 if (argc == 1) {
-			print_help();
-	    	return 1;
+    while ((val = getopt_long (argc, argv, "VasArehlm:", long_options, NULL)) != -1) {
+        switch (val) {
+        case 'v':
+        case 'V':
+            printf ("Matrixlab %s \n"
+                "Written by gioretikto \n\n"
+                "This is free software; see the source for copying conditions. There is NO\n"
+                "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",VERSION
+                );
+            exit(0);
+            break;
+        case 'h':
+        case '?':
+        default:
+            print_help();
+            exit(0);
+            break;
+        }
+    }
+    
+    if (argc == 1) {
+            print_help();
+            return 1;
     }
 
     if (argc > 1) {
-		file = fopen(argv[1], "rb");
-		if (file == NULL) {
-	    	fprintf(stderr, "Could not open input file %s: %s\n",
-		    argv[1], strerror(errno));
-	    	return 1;
-		}
+        file = fopen(argv[1], "r");
+        if (file == NULL) {
+            fprintf(stderr, "Could not open input file %s: %s\n",
+            argv[1], strerror(errno));
+            return 1;
+        }
     }
 
     if (argc > 2) {
-		int tmp;
-		tmp = atoi(argv[2]) * atoi(argv[2]);
-		
-		if (tmp == 0) {
-	   		fprintf(stderr, "Wrong dimension %s\n", argv[2]);
-	    	fclose(file);
-	    	return 1;
-		}
-		maxc = tmp;
+        arg_dim = atoi(argv[2]);
+        if ( arg_dim == 0) {
+            fprintf(stderr, "Wrong dimension %s\n", argv[2]);
+            fclose(file);
+            return 1;
+        }
     }
-    read_file(maxc, file);
+    read_file(arg_dim * arg_dim, file);
 }

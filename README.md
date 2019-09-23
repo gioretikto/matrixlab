@@ -1,4 +1,4 @@
-# Matrixlab v. 0.4
+<h1>Matrixlab v. 1.0</h1>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-USAGE
+<h2>USAGE</h2>
 ------------------------------
 This is a GNU/Linux utility for manipulating and performing matrix operations.
 The matrix file containing the input data is thus formatted:
@@ -26,17 +26,34 @@ The matrix file containing the input data is thus formatted:
 4 0
 1 2
 -2 3
-</pre>
 
 Execute with the following command:
 	./matrixlab matrix matrmax_dim
 
--where matrix is the file containing the matrices
--matrmax_dim is the dimension of the largest matrix (3 in the example above)
+<ul>
+	<li><p>where matrix is the file containing the matrices</p></li>
+	<li><p>matrmax_dim is the dimension of the largest matrix (3 in the example above)</p></li>
+</ul>
 
-in the example above run:
+in the example above run: ./matrixlab matrix 3
 
-	./matrixlab matrix 3
+or you can initialize matrices separately by using capital letters and input the expression at the end thus:
+
+<pre>
+A =
+1 1
+2 1
+
+B=
+2 1
+1 1
+
+C=
+1 0
+0 1
+
+C*B*A
+</pre>
 	
 In addition to multiplications, additions, and subtractions, matrixlab can also perform: 
 
@@ -53,11 +70,13 @@ det
 
 Transpositions
 -------------------
+
 <pre>
 1 -2 4 
 3 0 -5 
 ^T
 </pre>
+
 
 Inverse of a matrix:
 ---------------------
@@ -69,8 +88,7 @@ Inverse of a matrix:
 ^-1
 </pre>
 
-
-Some other complex calculation matrixlab can do
+Some other complex calculation matrixlab can perform
 -------------------------------------------------
 
 <pre>
@@ -89,29 +107,13 @@ det
 1 1 1
 </pre>
 
-<p>Execture command: ./matrixlab matrix 3</p>
+Execture command: ./matrixlab matrix 3
 
+<h3>Coming in the next update</h3>
 
-<h2>Coming in the next update</h2>
+We're trying to implement a new functionality in order to perform also symbolic operation, like:
 
-For the next version I'd like the program to perform also symbolic operation, like:
-
-<ul>
-<li><p>Inizialization of matrices:</p>
-<pre>
-A=
-1 1
-2 1
-
-B=
-5 6
-7 8
-
-A*B
-</pre>
-</li>
-
-<li><p>evaluation of algebraic expressions</p>
+evaluation of algebraic expressions
 
 <pre>
 cos x sin x
@@ -123,9 +125,7 @@ cos x 5
 cos x sin x
 cos x 5
 </pre>
-</li>
-</ul>
 
-<h3>Contacts</h3>
+Contacts
 
 You can reach me on the freenode IRC channel #cansi

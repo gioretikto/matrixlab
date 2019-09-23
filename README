@@ -1,5 +1,5 @@
-Matrixlab v. 0.4
-******************************
+# Matrixlab v. 1.0
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -18,7 +18,7 @@ USAGE
 This is a GNU/Linux utility for manipulating and performing matrix operations.
 The matrix file containing the input data is thus formatted:
 
-1 2 3
+
 -1 2 3
 0 1 3
 0 4 5
@@ -28,7 +28,7 @@ The matrix file containing the input data is thus formatted:
 -2 3
 
 Execute with the following command:
-	./matrilab matrix matrmax_dim
+	./matrixlab matrix matrmax_dim
 
 -where matrix is the file containing the matrices
 -matrmax_dim is the dimension of the largest matrix (3 in the example above)
@@ -36,57 +36,75 @@ Execute with the following command:
 in the example above run:
 
 	./matrixlab matrix 3
+
+or you can initialize matrices separately by using capital letters and input the expression at the end, thus:
+
+A =
+1 1
+2 1
+
+B=
+2 1
+1 1
+
+C=
+1 0
+0 1
+
+C*B*A
 	
 In addition to multiplications, additions, and subtractions, matrixlab can also perform: 
 
 Determinant Calculation
 --------------------------------
+To calculate the determinant format the input file thus:
 
-<pre>
 det
 4 -3 0
 2 -1 2
 1 5 7
-</pre>
 
 Transpositions
 -------------------
-<pre>
+
 1 -2 4 
 3 0 -5 
 ^T
-</pre>
+
 
 Inverse of a matrix:
 ---------------------
+
 
 4 -3 0
 2 -1 2
 1 5 7
 ^-1
 
+Some other complex calculation matrixlab can perform
+-------------------------------------------------
+2
+*
+5 6 7
+8 9 8
+1 2 3
+det
+1 0 0
+0 1 0
+0 0 1
++
+1 1 1
+1 1 1
+1 1 1
+
+Execture command: ./matrixlab matrix 3
+
 Coming in the next update
--------------------------------
 
-For the next version I'd like the program to perform also symbolic operation, like:
+We're trying to implement a new functionality in order to perform also symbolic operation, like:
 
--Inizialization of matrices:
+evaluation of algebraic expressions
 
-A=
-1 1
-2 1
-
-B=
-5 6
-7 8
-
-A*B
-</pre>
-</li>
-
--Eevaluation of algebraic expressions:
-
-<pre>
 cos x sin x
 cos x 5
 *
@@ -95,10 +113,7 @@ cos x 5
 =
 cos x sin x
 cos x 5
-</pre>
-</li>
-</ul>
 
 Contacts
-----------------
+
 You can reach me on the freenode IRC channel #cansi

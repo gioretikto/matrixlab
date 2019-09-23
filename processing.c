@@ -8,7 +8,7 @@ struct m multiply(struct m *A, struct m *B)
 { 
     size_t i, j, k;
     
-	struct m C  = make_struct(A->row, B->col);
+    struct m C  = make_struct(A->row, B->col);
  
     for (i=0; i< C.row; i++)
         for (j=0; j < C.col; j++)
@@ -23,32 +23,6 @@ struct m multiply(struct m *A, struct m *B)
     return C;
 }
 
-struct m add(struct m *A, struct m *B, const char c) 
-{ 
-    if ((A->row != B->row) || (A->col != B->col)){
-       		 printf("Matrixlab Error: You can't sum up matrix of different dimension\n");
-        	 exit(1);
-    }
-    
-    size_t i, j;
-    
-    double n = 0;
-    
-    if (c == '+')
-    	n = 1;
-    	
-    else if (c == '-')
-    	n = -1;
-    
-    struct m C = make_struct(A->row, B->col);
-    
-    for (i=0; i < C.row; i++)
-      for (j=0; j < C.col; j++)
-        C.data[i * C.col + j] = A->data[i * A->col + j] + n * B->data[i * B->col + j];
-        
-    return C;
-}
-
 struct m scalar_product(double scalar, struct m *A)
 {
     size_t i, j;
@@ -57,27 +31,53 @@ struct m scalar_product(double scalar, struct m *A)
      
     for(i=0; i < C.row; i++)
        for(j=0; j < C.col; j++)
-          C.data[i * C.col + j] = scalar * A->data[i * A->col + j];
+          C.data[i * C.col + j] = scalar * A->data[i * A->col + j];    
           
+    return C;
+}
+
+struct m add(struct m *A, struct m *B, const char c) 
+{ 
+    if ((A->row != B->row) || (A->col != B->col)){
+             printf("Matrixlab Error: You can't sum up matrix of different dimension\n");
+             exit(1);
+    }
+    
+    size_t i, j;
+    
+    double n = 0;
+    
+    if (c == '+')
+        n = 1;
+        
+    else if (c == '-')
+        n = -1;
+    
+    struct m C = make_struct(A->row, B->col);
+    
+    for (i=0; i < C.row; i++)
+         for (j=0; j < C.col; j++)
+            C.data[i * C.col + j] = A->data[i * A->col + j] + n * B->data[i * B->col + j];
+        
     return C;
 }
 
 struct m make_struct(size_t rows, size_t cols){
 
-	struct m C;
+    struct m C;
     C.data = malloc(sizeof(double) * rows * cols);
  
     C.row = rows;
     C.col = cols;
-	
-	return C;
+    
+    return C;
 }
 
 void f(double x)
 {
-    double i, f = modf(x,&i);
+    double i, r = modf(x,&i);
     
-    if(fabs(f)<.00001)
+    if(fabs(r)<.00001)
         printf("%.f ",i);
     
     else printf("%f ",x);
@@ -101,7 +101,7 @@ void print_matrix(struct m *A){
 
 void transpose(struct m *A)
 { 
-	struct m C  = make_struct(A->row, A->col);
+    struct m C  = make_struct(A->row, A->col);
 
     size_t i, j;
     
@@ -128,9 +128,9 @@ void inverse(size_t n, struct m *A)
     
     struct m C  = make_struct(n, n);
     
-    double Rdata[(n-1)*(n-1)];        		/* remaining data values */
-    struct m R = { n-1, n-1, Rdata }; 		/* matrix structure for them */
-    for (count = 0; count < n*n; count++) 	/* Create n*n Matrix of Minors */
+    double Rdata[(n-1)*(n-1)];              /* remaining data values */
+    struct m R = { n-1, n-1, Rdata };       /* matrix structure for them */
+    for (count = 0; count < n*n; count++)   /* Create n*n Matrix of Minors */
     {
         size_t row = count/n, col = count%n;
         for (i_count = i = 0; i < n; i++)
@@ -166,7 +166,7 @@ double determinant(size_t n, struct m *A)
     
     else{
     
-    	struct m C  = make_struct(A->row-1, A->col-1);
+        struct m C  = make_struct(A->row-1, A->col-1);
         
         for(count=0; count < n; count++)
         {
@@ -184,7 +184,7 @@ double determinant(size_t n, struct m *A)
                 }
                 i_count++;
             }
-            det += pow(-1, count) * A->data[count] * determinant(n-1,&C); /*Recursive call */
+            det += pow(-1, count) * A->data[count] * determinant(n-1, &C); /*Recursive call */
         }
         free(C.data);
         return det;
@@ -193,6 +193,26 @@ double determinant(size_t n, struct m *A)
 
 void copy_matrix(struct m *A, struct m *tmp){
 
-		free(A->data);
-		*A = *tmp;		
+        free(A->data);
+        *A = *tmp;      
+}
+
+/* deallocate memory */
+void mtx_destroy(struct m *A, int c){
+
+    int i;
+    
+    for(i=0; i <= c; i++)
+        free(A[i].data);
+}
+
+unsigned char mapping(int size, unsigned char *map, unsigned char buf){
+                    
+        unsigned char i, x;
+        x=0;
+        for(i = 0; i <= size; i++)
+            if(map[i] == buf - 'A')
+                x = i;
+            
+        return x;
 }

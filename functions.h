@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-#define VERSION "0.4"			/* This program  version*/
+#define VERSION "1.0"			/* This program  version*/
 #define MAXNOP 20 				/* Max number of operations allowed */
 #define MAXNMATR 40 			/* Max number of matrices */
 #define MAXLINE 500 			/* Max lenght of a line */
@@ -34,6 +34,8 @@ void print_matrix(struct m *A);
 void transpose(struct m *A);
 double determinant(size_t n, struct m *A);
 void inverse(size_t n, struct m *A);
-void read_file(int maxc, FILE *fp);
+void read_file(int dim, FILE *fp);
 struct m make_struct(size_t rows, size_t cols);
 void copy_matrix(struct m *A, struct m *tmp);
+void mtx_destroy(struct m *A, int c);
+unsigned char mapping(int size, unsigned char *map, unsigned char buf);
