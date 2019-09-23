@@ -100,7 +100,7 @@ det
 Execture command: ./matrixlab matrix 3
 
 Coming in the next update
-
+******************************************************
 We're trying to implement a new functionality in order to perform also symbolic operation, like:
 
 evaluation of algebraic expressions
@@ -115,5 +115,5 @@ cos x sin x
 cos x 5
 
 Contacts
-
+*****************************************************
 You can reach me on the freenode IRC channel #cansi

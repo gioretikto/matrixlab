@@ -14,7 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <h2>USAGE</h2>
-------------------------------
+
 This is a GNU/Linux utility for manipulating and performing matrix operations.
 The matrix file containing the input data is thus formatted:
 
@@ -88,8 +88,7 @@ Inverse of a matrix:
 ^-1
 </pre>
 
-Some other complex calculation matrixlab can perform
--------------------------------------------------
+<h3>Some other complex calculation matrixlab can perform</h3>
 
 <pre>
 2
@@ -126,6 +125,6 @@ cos x sin x
 cos x 5
 </pre>
 
-Contacts
+<h3>Contacts</h3>
 
 You can reach me on the freenode IRC channel #cansi
