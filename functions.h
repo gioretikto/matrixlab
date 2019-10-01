@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-#define VERSION "1.0"			/* This program  version*/
+#define VERSION "1.1"			/* This program  version*/
 #define MAXNOP 20 				/* Max number of operations allowed */
 #define MAXNMATR 40 			/* Max number of matrices */
 #define MAXLINE 500 			/* Max lenght of a line */

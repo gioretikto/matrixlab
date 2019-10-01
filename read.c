@@ -16,7 +16,7 @@ void read_file(int dim, FILE *fp)
     double *d = NULL;
     int i, n;
     char line[MAXLINE];		/* to store each lines of file */
-    char *buf = line;
+    char *buf;
     char tmpc;
     unsigned char map [MAXNMATR];
 
@@ -55,7 +55,7 @@ void read_file(int dim, FILE *fp)
         }
       
         /* check if line contains operator */
-        if ( *buf == '*' || *buf == '+' || *buf == '-')
+        if ( (*buf == '*' || *buf == '+' || *buf == '-') && buf[1] == '\n')
         {
             op.symbol[op.nop++] = *buf;
             matrix[op.id].col = ncol;
@@ -65,7 +65,7 @@ void read_file(int dim, FILE *fp)
             continue;
         }
         
-        if(isdigit(*buf) && (check < dim)) {
+        if(isdigit(*buf) || ((*buf == '+' || *buf == '-') && isdigit(buf[1]) && (check < dim)) ) {
         
             if(check == 0){
                 op.id++;
@@ -104,11 +104,11 @@ void read_file(int dim, FILE *fp)
         
         if(*buf != '=' && (op.id >= 0) ) {
         	putchar(tmpc);
-            max_id = op.id;
+            	max_id = op.id;
         	op.id = 0;        	
 
 		    while(*buf != '\0'){
-				int index;
+			int index;
 		    	index = mapping(max_id, map, *buf);
 		    	if(isupper(*buf) && index != op.id){
 		    		struct m tmp;
