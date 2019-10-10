@@ -67,6 +67,8 @@ C*B*A
 </li>
 </ol>
 
+An equivalent syntax for the expression is: CBA
+
 In addition to multiplications, additions, and subtractions, matrixlab can also perform: 
 
 Determinant Calculation
