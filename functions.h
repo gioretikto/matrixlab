@@ -5,37 +5,38 @@
 #include <math.h>
 #include <string.h>
 
-#define VERSION "1.1"			/* This program  version*/
-#define MAXNOP 20 				/* Max number of operations allowed */
-#define MAXNMATR 40 			/* Max number of matrices */
-#define MAXLINE 500 			/* Max lenght of a line */
-#define DEFAULT_DIMENSION 100
 #define DEFAULT_FILE stdin
+#define MAXLINE 500
+#define DEFAULT_DIMENSION 20
+#define VERSION "2.0"
 
-struct m{
-    size_t row;
-    size_t col;
-    double *data;
+struct matrix {
+	    size_t row, col;
+   	 	double *data;
+		char op[4];			  /* the first element for determinant the 2nd for transpose and 3d for * + -; 4th for transpose  */
+        char value;
+        struct matrix *next;       /* pointer to the next item */
 };
 
-struct operator{
-	 int nop;	    			/* No of operators */
-     char symbol[MAXNOP];
-     int id;					/* No of matrix read*/
-};
-
-void display_data(struct m *matrix, struct operator *op);
-void calculate(struct m *matrix, struct operator *op);
-struct m add(struct m *A, struct m *B, const char c);
-struct m multiply(struct m *A, struct m *B);
-struct m scalar_product(double scalar, struct m *B);
-void f(double x);
-void print_matrix(struct m *A);
-void transpose(struct m *A);
-double determinant(size_t n, struct m *A);
-void inverse(size_t n, struct m *A);
+void free_all(struct matrix *head);
 void read_file(int dim, FILE *fp);
-struct m make_struct(size_t rows, size_t cols);
-void copy_matrix(struct m *A, struct m *tmp);
-void mtx_destroy(struct m *A, int c);
-unsigned char mapping(int size, unsigned char *map, unsigned char buf);
+void f(double x);
+void print_list(struct matrix *head);
+void print_matrix(struct matrix *A);
+void add_item(struct matrix **ptr, double *data, size_t nrow, size_t ncol, char *op, char value);
+void multiplication(struct matrix *A);
+void multiply(struct matrix *A, struct matrix *B);
+void scalar_product(double scalar, struct matrix *A);
+void delete(struct matrix *head);
+struct matrix make_struct(size_t rows, size_t cols);
+void add(struct matrix *A, struct matrix *B, const char c);
+void summation(struct matrix *head);
+double determinant(size_t n, struct matrix *A);
+void det(struct matrix *head);
+void inv(struct matrix *head);
+void inverse(size_t n, struct matrix *A);
+void trans(struct matrix *head);
+void transpose(struct matrix *A);
+void remove_spaces(char* s);
+struct matrix *find_node(struct matrix *head, char value);
+void halt(struct matrix *head, const char *error);

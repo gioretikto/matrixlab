@@ -1,48 +1,38 @@
 #include <stdio.h>
 #include "functions.h"
 
-void display_data(struct m *matrix, struct operator *op){
+void print_list(struct matrix *head) {
+
+	if(head != NULL){
+		print_list(head->next);
+		print_matrix(head);
+		printf("\n");
+	}
+}
+
+void print_matrix(struct matrix *A) {
     
-    int i;
-    
-    /* Printing the matrices and operations */
-    for(i=0; i <= op->id; i++){
-                     
-        if(op->symbol[i] == 'd'){
-            printf("det\n");
-            print_matrix(&matrix[i]);
-            continue;
+     size_t i, j;
+
+     double *tmp = A->data;
+     
+     if(A->op[0] == 'd')
+     	printf("det\n");
+     
+     for(i=0; i < A->row; i++){
+        for(j=0; j < A->col; j++){
+                f(*(tmp++));
         }
-        
-        if (op->symbol[i] == '*' || op->symbol[i] == '-' || op->symbol[i] == '+')
-        {
-            print_matrix(&matrix[i]);
-            if( i > 0 && (op->symbol[i - 1] == 'i' || op->symbol[i - 1] == 'T' || op->symbol[i - 1] == 't'))
-                continue;
-            else
-                printf("%c\n", op->symbol[i]);
-        }
-        
-         if (op->symbol[i] == 't' || op->symbol[i] == 'T'){            
-             print_matrix(&matrix[i]);
-             printf("^T\n");
-             if(op->symbol[i+1] != '?')
-                printf("%c\n", op->symbol[i+1]);
-             continue;
-        }
-        
-         if (op->symbol[i] == 'i'){
-            print_matrix(&matrix[i]);
-            printf("^-1\n"); 	/* matrix inverse operation */
-            if(op->symbol[i+1] != '?')
-                printf("%c\n", op->symbol[i+1]);
-            continue;
-        }
-        
-         if(op->symbol[i] == '?'){
-             print_matrix(&matrix[i]);
-        }        
+        putchar('\n');
     }
     
-    calculate(matrix, op);
+    if(A->op[1] == 'i'){
+    	printf("^-1\n");
+ 	}
+ 	
+ 	if(A->op[3] == 't')
+ 		printf("^T\n");
+ 	
+	if(A->op[2] == '*' || A->op[2] == '+' || A->op[2] == '-')
+		putchar(A->op[2]);
 }

@@ -22,8 +22,6 @@
 #include <errno.h>
 #include <getopt.h>
 #include "functions.h"
-#define DEFAULT_FILE stdin
-#define DEFAULT_DIMENSION 100
 
 static struct option long_options[] = {
 		/* Options without arguments */

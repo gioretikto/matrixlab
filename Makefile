@@ -1,7 +1,7 @@
 CC = gcc
-CFLAGS = -Wall -g -Wshadow -pedantic -Wextra
+CFLAGS = -Wall -g -Wshadow -pedantic -Wextra -std=c99
 LDFLAGS = -lm
-OBJFILES = main.o read.o display.o processing.o calculate.o
+OBJFILES = main.o read.o display.o processing.o
 TARGET = matrixlab
 all: $(TARGET)
 

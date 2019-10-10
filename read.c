@@ -1,152 +1,231 @@
 #include "functions.h"
 #include <ctype.h>
 #include <string.h>
-#define MAXNOP 20 /*Max number of operations allowed */
-#define MAXNMATR 40 /*Max number of matrices */
-#define MAXLINE 500 /*Max lenght of a line */
 
 void read_file(int dim, FILE *fp)
 {
-    struct m matrix[MAXNMATR];
-    struct operator op;
-    size_t ncol, nrow;          /* No of columns, rows of a matrix */
-    int off = 0;
-    int check = 0;
-    int max_id;
-    double *d = NULL;
-    int i, n;
+	struct matrix *head = NULL;
+	int check, n, off;
+	check = off = 0;
+    double data[dim];
+	double *d = data;
     char line[MAXLINE];		/* to store each lines of file */
-    char *buf;
-    char tmpc;
-    unsigned char map [MAXNMATR];
-
-    ncol = nrow = 0;
-    op.id = -1;
-    op.nop = 0;
-        
-    for (i=0; i < MAXNOP; i++)
-        op.symbol[i] = '?';
-        
-    i = 0;
-   
-    /*Read file line by line */
-    while (fgets (buf = line, MAXLINE, fp)){
+    char *buf = line;
+	size_t ncol, nrow;
+	ncol = nrow = 0;
+	_Bool unary[3];
+	unary[0] = unary[1] = unary[2] = 0;
+	char value, tmpc;
+	char operator[4] = {'\0'};
+	double k;
+	char *rest;
+	int map[25] = {0};
+	
+	/* Read file line by line */
+    while (fgets (buf = line, MAXLINE, fp)) {
     
-        if (strcmp(buf, "\n") == 0 || *buf == '\0'){
-                continue;
-        }
-        
-        while (isblank(*buf) && (*buf != '\0'))
-        	buf++;
-        
-        if (strncmp(buf, "det", 3) == 0){
-                op.symbol[op.nop++] = 'd';  /* determinant operation */
+    	if(*buf =='/')
+    		halt(head, "you cannot divide matrices");
+    
+        if (strncmp(buf, "det", 3) == 0) {
+                operator[0] = 'd';  /* determinant operation */
+                unary[2] = 1;
                 continue;
         }
         
         if (strncmp(buf, "^-1", 3) == 0) {
-                op.symbol[op.nop++] = 'i';  /* matrix inverse operation */
+                operator[1] = 'i';  /* matrix inverse operation */
+                unary[0] = 1;
                 continue;
         }
         
-        if (strncmp(buf, "^T", 2) == 0 || strncmp(buf, "^t", 2) == 0) {
-                op.symbol[op.nop++] = 't';  /* matrix transpose operation */
+        if (strncmp(buf, "^T", 2) == 0) {
+                operator[3] = 't';  /* matrix transpose operation */
+                unary[1] = 1;
                 continue;
         }
-      
-        /* check if line contains operator */
-        if ( (*buf == '*' || *buf == '+' || *buf == '-') && buf[1] == '\n')
-        {
-            op.symbol[op.nop++] = *buf;
-            matrix[op.id].col = ncol;
-            matrix[op.id].row = nrow;
-            nrow = ncol = 0;
-            check = 0;
-            continue;
-        }
-        
-        if(isdigit(*buf) || ((*buf == '+' || *buf == '-') && isdigit(buf[1]) && (check < dim)) ) {
-        
-            if(check == 0){
-                op.id++;
-                d = matrix[op.id].data = malloc(sizeof(double) * dim);
-            }
-            
-            /* read numbers in a line into d */
-            while (sscanf (buf + off, "%lf%n", d, &n) == 1) {
-                    if(check != dim - 1)
-                        d++;
-                    if (nrow == 0)
-                       ncol++;
-                    off += n;
-                    check++;
-            }
-            nrow++;
-	        off = 0;
-        }         
-
-        matrix[op.id].col = ncol;
-    	matrix[op.id].row = nrow;
         
         if (isupper(*buf)) {
         	  tmpc = *buf;
         	  buf++;
         
-        while(isblank(*buf))
-        		buf++;
-        		
-        if ( *buf == '=') { /* check matrix initialization like A =\n 1 0 0 \n 2 0 ... */
-                map[op.id + 1] = tmpc - 'A';
-                nrow = ncol = 0;
-                check = 0;
-                continue;
+		    while(isblank(*buf))
+		    		buf++;
+		    		
+		    if (*buf == '=') { /* check matrix initialization a row like: A =\n 1 0 0 \n 2 0 ... */
+		    	    
+		            if(check != 0) {
+		            	add_item(&head, data, nrow, ncol, operator, value);
+		            	d = data;
+		            }
+		            
+   		            value = tmpc;
+		            nrow = ncol = 0;
+		            check = 0;
+		            continue;
+		    }
+        }
+
+ 		/* check if line contains operator */
+        if ((*buf == '*' || *buf == '+' || *buf == '-') && buf[1] == '\n')
+        {
+        	operator[2] = *buf;
+	   		add_item(&head, data, nrow, ncol, operator, '\0');
+            nrow = ncol = 0;
+            check = 0;
+			d = data;
+			operator[0] = operator[1] = operator[2] = operator[3] = '\0';
+            continue;
         }
         
-        if(*buf != '=' && (op.id >= 0) ) {
-        	putchar(tmpc);
-            	max_id = op.id;
-        	op.id = 0;        	
+        if(isdigit(*buf) || (*buf == '+' || *buf == '-')){
+        	if(check < dim) {       
+		        /* read numbers in a line into d */
+		        while (sscanf (buf + off, "%lf%n", d, &n) == 1) {
+		                if(check != dim - 1)
+		                    d++;
+		                if (nrow == 0)
+		                   ncol++;
+		                off += n;
+		                check++;
+		        }
+		        nrow++;
+			    off = 0;
+		    }
+		}
+	} /* end of while */
 
-		    while(*buf != '\0'){
-			int index;
-		    	index = mapping(max_id, map, *buf);
-		    	if(isupper(*buf) && index != op.id){
-		    		struct m tmp;
-					tmp.row = matrix[op.id].row;
-					tmp.col = matrix[op.id].col;
-					tmp.data = malloc(sizeof(double) * tmp.row * tmp.col);
-					memcpy(tmp.data, matrix[op.id].data, sizeof(double) * tmp.row * tmp.col);
-					memcpy(matrix[op.id].data, matrix[index].data, sizeof(double) * matrix[index].row * matrix[index].col);
-					memcpy(matrix[index].data, tmp.data, sizeof(double) * tmp.row * tmp.col);
-					tmpc = map[op.id];
-					map[op.id] = tmpc - 'A';
-					map[index] = tmpc;
-					free(tmp.data);
+	fclose(fp);
+	
+	if (check != 0) { /* parse the expression */
+	
+		add_item(&head, data, nrow, ncol, operator, value);
+		remove_spaces(buf);
+		
+		struct matrix *tmp = NULL;
+		
+		printf("%s = \n\n", buf);
+		
+		while(*buf != '\0') {
+		
+			if(islower(*buf))
+				halt(head, "you cannot use lower case letters to represent matrices");
+		
+			if (isdigit(*buf) || ((*buf == '-' || *buf == '+') && isdigit(buf[1]))) {
+			
+				k = strtod(buf, &rest);
+				
+				buf = rest;
+				
+				while (!isupper(*buf)) {
+					buf++;
+					if (*buf == '+' || *buf == '-' || *buf == '*') {
+						if(!isupper(buf[-1]) && !isdigit(buf[-1]))
+							halt(head, "Double operator detected");
+					}
 				}
 				
-				printf("%c", *buf);
-			
-		        if(!isupper(*buf) && !isblank(*buf)){
-		            op.symbol[op.nop++] = *buf;
-		            op.id++;
-		        }
-
-		        buf++;
+				if(map[*buf-'A'] > 0) {
+					
+					tmp = find_node(head, *buf);
+					
+					for (tmpc = 'A'; tmpc <= 'Z'; tmpc++)
+						if ((find_node(head, tmpc)) == NULL)
+							break;
+					
+					add_item(&head, tmp->data, tmp->row, tmp->col, operator, tmpc);
+					tmp = head;
+					map[tmpc-'A']++;
+					if(isupper(buf[1]))
+						tmp->op[2] = '*';
+				}					
+					
+				else { 
+					if((tmp = find_node(head, *buf)) == NULL) 
+						halt(head, "matrix not found");
+					scalar_product(k, tmp);
+					map[*buf-'A']++;
+					if(isupper(buf[1]))
+						tmp->op[2] = '*';
+				}
+				buf++;			
 		    }
-		    op.id = max_id;
-		    printf("=\n");
-        }
+			
+			if (strncmp(buf, "det", 3) == 0) {
+                unary[2] = 1;
+                buf += 3;
+                tmp = find_node(head, *buf);
+                tmp->op[0] = 'd';
+                buf++;
+        	}
+        	
+        	if (strncmp(buf, "^T", 2) == 0) {
+                unary[1] = 1;
+				tmp->op[3] = 't';
+				buf += 2;
+        	}
+        	
+        	if (strncmp(buf, "^-1", 3) == 0) {
+                unary[0] = 1;
+                tmp->op[1] = 'i';
+                buf += 3;
+			}
+			
+			if (isupper(*buf)) {
+				if(map[*buf-'A'] > 0) {
+					tmp = find_node(head, *buf);
+					
+					for (tmpc = 'A'; tmpc <= 'Z'; tmpc++)
+						if ((find_node(head, tmpc)) == NULL)
+							break;					
+					
+					add_item(&head, tmp->data, tmp->row, tmp->col, operator, tmpc);
+					tmp = head;
+					map[tmpc-'A']++;
+					if(isupper(buf[1]))
+						tmp->op[2] = '*';
+				}					
+					
+				else {
+					if((tmp = find_node(head, *buf)) == NULL) 
+						halt(head, "matrix not found");
+					map[*buf-'A']++;
+					if(isupper(buf[1]))
+						tmp->op[2] = '*';
+				}
+				buf++;	
+			}
+			
+			if (*buf == '+' || *buf == '-' || *buf == '*') {
+				if(tmp != NULL && !isupper(buf[-1]) && !isdigit(buf[-1])) {
+					halt(head, "double operator detected");
+				}
+				tmp->op[2] = *buf;
+				buf++;
+			}
+		}
+	}
 
-	} /*end of if (isupper(buf[i]) */
+	print_list(head);
 
-    }   /* end of while fgets cycle */
+	printf("=\n");
+	
+	if(unary[1] == 1)
+		trans(head); /* Transpose */
+	
+	if(unary[0] == 1)
+		inv(head);
+	
+	if(unary[2] == 1)
+		det(head);
 
-    fclose(fp);
-    
-    if (op.nop == 0) {
-        fprintf(stderr, "Nothing to do\n");
-        exit(1);
-    }
- 
-    display_data(matrix, &op);
+	multiplication(head);
+
+	summation(head);
+
+	print_list(head);
+	
+	free(head->data);
+	
+	free(head);	
 }
