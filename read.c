@@ -1,7 +1,5 @@
 #include "functions.h"
-
 #include <ctype.h>
-
 #include <string.h>
 
 void read_file(int dim, FILE * fp) {
@@ -17,9 +15,7 @@ void read_file(int dim, FILE * fp) {
     _Bool unary[3];
     unary[0] = unary[1] = unary[2] = 0;
     char value, tmpc;
-    char operator[4] = {
-        '\0'
-    };
+    char operator[4] = {'\0'};
     double k;
     char * rest;
     int map[25] = {0};
@@ -27,7 +23,7 @@ void read_file(int dim, FILE * fp) {
     /* Read file line by line */
     while (fgets(buf = line, MAXLINE, fp)) {
 
-        if ( * buf == '/')
+        if (* buf == '/')
             halt(head, "you cannot divide matrices");
 
         if (strncmp(buf, "det", 3) == 0) {
@@ -55,11 +51,11 @@ void read_file(int dim, FILE * fp) {
             while (isblank(*buf))
                 buf++;
 
-            if ( * buf == '=') {
+            if (* buf == '=') {
                 /* check matrix initialization a row like: A =\n 1 0 0 \n 2 0 ... */
 
                 if (check != 0) {
-                    add_item( & head, data, nrow, ncol, operator, value);
+                    add_item(&head, data, nrow, ncol, operator, value);
                     d = data;
                 }
 
@@ -71,7 +67,7 @@ void read_file(int dim, FILE * fp) {
         }
 
         /* check if line contains operator */
-        if (( * buf == '*' || * buf == '+' || * buf == '-') && buf[1] == '\n') {
+        if ((* buf == '*' || * buf == '+' || * buf == '-') && buf[1] == '\n') {
             operator[2] = * buf;
             add_item( & head, data, nrow, ncol, operator, '\0');
             nrow = ncol = 0;
@@ -100,17 +96,17 @@ void read_file(int dim, FILE * fp) {
 
     fclose(fp);
 
-    if (check != 0) {
+    if (*(head->next)->op != '\0') {
         /* parse the expression */
 
-        add_item( & head, data, nrow, ncol, operator, value);
+        add_item(&head, data, nrow, ncol, operator, value);
         remove_spaces(buf);
 
         struct matrix * tmp = NULL;
 
         printf("%s = \n\n", buf);
 
-        while ( * buf != '\0') {
+        while (*buf != '\0') {
 
             if (islower(*buf))
                 halt(head, "you cannot use lower case letters to represent matrices");
@@ -196,7 +192,7 @@ void read_file(int dim, FILE * fp) {
                 buf++;
             }
 
-            if ( * buf == '+' || * buf == '-' || * buf == '*') {
+            if (* buf == '+' || * buf == '-' || * buf == '*') {
                 if (tmp != NULL && !isupper(buf[-1]) && !isdigit(buf[-1])) {
                     halt(head, "double operator detected");
                 }
@@ -205,6 +201,9 @@ void read_file(int dim, FILE * fp) {
             }
         }
     }
+    
+    else
+    	add_item(&head, data, nrow, ncol, operator, value);
 
     print_list(head);
 

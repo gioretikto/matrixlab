@@ -41,9 +41,9 @@ print_help (void)
 
 int main(int argc, char *argv[])
 {    
-    FILE *file = DEFAULT_FILE;
-    int arg_dim = DEFAULT_DIMENSION;
-    int val;
+	FILE *file = DEFAULT_FILE;
+	int arg_dim = MAX_DIM;
+	int val;
     
     /* Read the parameters */
     while ((val = getopt_long (argc, argv, "VasArehlm:", long_options, NULL)) != -1) {
@@ -82,9 +82,15 @@ int main(int argc, char *argv[])
 
     if (argc > 2) {
         arg_dim = atoi(argv[2]);
-        if ( arg_dim == 0) {
+        if (arg_dim == 0) {
             fprintf(stderr, "Wrong dimension %s\n", argv[2]);
             fclose(file);
+            return 1;
+        }
+        
+        if (arg_dim > MAX_DIM) {
+        	printf("matrixlab error: If you want to use large matrice change MAX_DIM in functions.h\n");
+        	fclose(file);
             return 1;
         }
     }

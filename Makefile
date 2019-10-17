@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -g -Wshadow -pedantic -Wextra -std=c99
+CFLAGS = -Wall -pedantic -Wextra -std=c99
 LDFLAGS = -lm
 OBJFILES = main.o read.o display.o processing.o
 TARGET = matrixlab
