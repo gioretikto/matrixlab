@@ -8,7 +8,7 @@
 #define DEFAULT_FILE stdin
 #define MAXLINE 500
 #define MAX_DIM 20
-#define VERSION "2.0"
+#define VERSION "2.1"
 
 struct matrix {
 	    size_t row, col;
