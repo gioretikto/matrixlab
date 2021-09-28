@@ -13,7 +13,7 @@
 struct matrix {
 	    size_t row, col;
    	 	double *data;
-		char op[4];			  /* the first element for determinant the 2nd for transpose and 3d for * + -; 4th for transpose  */
+		char op[4];			  		/* the first element for determinant the 2nd for transpose and 3d for * + -; 4th for transpose  */
         char value;
         struct matrix *next;       /* pointer to the next item */
 };

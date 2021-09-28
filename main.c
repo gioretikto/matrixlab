@@ -46,23 +46,25 @@ int main(int argc, char *argv[])
 	int val;
     
     /* Read the parameters */
-    while ((val = getopt_long (argc, argv, "VasArehlm:", long_options, NULL)) != -1) {
-        switch (val) {
-        case 'v':
-        case 'V':
-            printf ("Matrixlab %s \n"
-                "Written by gioretikto \n\n"
-                "This is free software; see the source for copying conditions. There is NO\n"
-                "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",VERSION
-                );
-            exit(0);
-            break;
-        case 'h':
-        case '?':
-        default:
-            print_help();
-            exit(0);
-            break;
+    while ((val = getopt_long (argc, argv, "VasArehlm:", long_options, NULL)) != -1)
+	{
+        switch (val)
+		{
+		    case 'v':
+		    case 'V':
+		        printf ("Matrixlab %s \n"
+		            "Written by gioretikto \n\n"
+		            "This is free software; see the source for copying conditions. There is NO\n"
+		            "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",VERSION
+		            );
+		        exit(0);
+		        break;
+		    case 'h':
+		    case '?':
+		    default:
+		        print_help();
+		        exit(0);
+		        break;
         }
     }
     
@@ -94,5 +96,7 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
+
     read_file(arg_dim * arg_dim, file);
+
 }

@@ -38,23 +38,24 @@ void add_item(struct matrix **ptr, double *data, size_t nrow, size_t ncol, char 
 		*ptr = item;
 }
 
-void inv(struct matrix *head) {
-
-		if(head == NULL)
+void inv(struct matrix *head)
+{
+		if (head == NULL)
 			return;
 
 		if(head->op[1] != 'i')
 			inv(head->next);
 
-		if(head->op[1] == 'i'){
+		if(head->op[1] == 'i')
+		{
 			inverse(head->row, head);
 			head->op[1] = '\0';
 			inv(head->next);
 		}
 }
 
-void trans(struct matrix *head) {
-
+void trans(struct matrix *head)
+{
 		if(head == NULL)
 			return;
 
@@ -68,8 +69,8 @@ void trans(struct matrix *head) {
 		}
 }
 
-void multiplication(struct matrix *head) {
-
+void multiplication(struct matrix *head)
+{
 		if(head == NULL)
 			return;
 
