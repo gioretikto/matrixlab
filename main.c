@@ -19,9 +19,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <getopt.h>
-#include "functions.h"
+
+#define VERSION "2.10"
+#define MAX_DIM 500
+
+int read_file(unsigned int dim, FILE *fp);
 
 static struct option long_options[] = {
 		/* Options without arguments */
@@ -29,8 +32,7 @@ static struct option long_options[] = {
 		{"version",     no_argument,       NULL, 'V'},
 };
 
-static void
-print_help (void)
+static void print_help (void)
 {
 	printf ("Matrixlab %s\n"
 		"Usage: matrixlab path_to_file dimension\n\n"
@@ -41,9 +43,12 @@ print_help (void)
 
 int main(int argc, char *argv[])
 {    
-	FILE *file = DEFAULT_FILE;
-	int arg_dim = MAX_DIM;
+	FILE *file;
+	int dimension;
 	int val;
+	char filename[50];
+
+	char *fname = filename;
     
     /* Read the parameters */
     while ((val = getopt_long (argc, argv, "VasArehlm:", long_options, NULL)) != -1)
@@ -53,7 +58,7 @@ int main(int argc, char *argv[])
 		    case 'v':
 		    case 'V':
 		        printf ("Matrixlab %s \n"
-		            "Written by gioretikto \n\n"
+		            "Written by Giovanni Resta \n\n"
 		            "This is free software; see the source for copying conditions. There is NO\n"
 		            "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",VERSION
 		            );
@@ -68,35 +73,45 @@ int main(int argc, char *argv[])
         }
     }
     
-    if (argc == 1) {
-            print_help();
-            return 1;
+    if (argc == 1)
+	{
+		printf ("Enter the name of the data file: ");
+		scanf ("%[^\n]", filename);
+
+        file = fopen(filename, "r");
+
+		printf ("Enter the dimension: ");
+		scanf ("%d", &dimension);
     }
 
-    if (argc > 1) {
-        file = fopen(argv[1], "r");
-        if (file == NULL) {
-            fprintf(stderr, "Could not open input file %s: %s\n",
-            argv[1], strerror(errno));
-            return 1;
-        }
+    else if (argc == 3)
+	{
+
+		fname = argv[1];
+
+        file = fopen(fname, "r");
+
+        dimension = atoi(argv[2]);
     }
 
-    if (argc > 2) {
-        arg_dim = atoi(argv[2]);
-        if (arg_dim == 0) {
-            fprintf(stderr, "Wrong dimension %s\n", argv[2]);
-            fclose(file);
-            return 1;
-        }
-        
-        if (arg_dim > MAX_DIM) {
-        	printf("matrixlab error: If you want to use large matrice change MAX_DIM in functions.h\n");
-        	fclose(file);
-            return 1;
-        }
+    else
+		print_help();
+
+	if (file == NULL)
+	{
+		fprintf(stderr, "Could not open input file %s\n", argv[1]);
+		return -2;
     }
 
-    read_file(arg_dim * arg_dim, file);
+	if (dimension <= 0 || dimension > MAX_DIM)
+	{
+		fprintf(stderr, "Wrong dimension %s\n", argv[2]);
+		fclose(file);
+		return -2;
+    }        
 
+	printf("Opening file %s\n\n", fname);
+	read_file(dimension * dimension, file);
+	
+	return 0;
 }

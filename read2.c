@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include <string.h>
 
-void read_file(int dim, FILE * fp)
+void read_file(int dim, FILE *fp)
 {
 	struct matrix * head = NULL;
     int check, n, off;
@@ -25,9 +25,12 @@ void read_file(int dim, FILE * fp)
     while (fgets(buf = line, MAXLINE, fp))
 	{
         if (*buf == '/')
-            halt(head, "you cannot divide matrices");
+		{
+			fprintf(stderr, "you cannot divide matrices");
+			return -2;
+		}
 
-        if (strncmp(buf, "det", 3) == 0)
+        else if (strncmp(buf, "det", 3) == 0)
 		{
             operator[0] = 'd'; /* determinant operation */
             unary[2] = 1;
@@ -58,7 +61,8 @@ void read_file(int dim, FILE * fp)
 
             if (*buf == '=')		                /* check matrix initialization a row like: A =\n 1 0 0 \n 2 0 ... */
 			{
-                if (check != 0) {
+                if (check != 0)
+				{
                     add_item(&head, data, nrow, ncol, operator, value);
                     d = data;
                 }
@@ -74,7 +78,7 @@ void read_file(int dim, FILE * fp)
         if ((*buf == '*' || *buf == '+' || *buf == '-') && buf[1] == '\n')
 		{
             operator[2] = *buf;
-            add_item( & head, data, nrow, ncol, operator, '\0');
+            add_item(&head, data, nrow, ncol, operator, '\0');
             nrow = ncol = 0;
             check = 0;
             d = data;
@@ -136,7 +140,6 @@ void read_file(int dim, FILE * fp)
 
                 if (map[*buf - 'A'] > 0)
 				{
-
                     tmp = find_node(head, *buf);
 
                     for (tmpc = 'A'; tmpc <= 'Z'; tmpc++)
