@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -pedantic -Wextra -std=c99 -ggdb3
+CFLAGS = -Wall -pedantic -Wextra -std=c99
 LDFLAGS = -lm
 OBJFILES = main.o parser.o lists.o matrix.o
 TARGET = matrixlab

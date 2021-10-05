@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-#define VERSION "2.10"
+#define VERSION "2.1"
 #define MAX_DIM 500
 
 int read_file(unsigned int dim, FILE *fp);
@@ -86,7 +86,6 @@ int main(int argc, char *argv[])
 
     else if (argc == 3)
 	{
-
 		fname = argv[1];
 
         file = fopen(fname, "r");

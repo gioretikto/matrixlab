@@ -42,9 +42,6 @@ This is a GNU/Linux utility for manipulating and performing matrix operations. T
 
 <p>in the example above run: ./matrixlab matrix 3</p>
 
-</li>
-
-
 In addition to multiplications, additions, and subtractions, matrixlab can also perform: 
 
 Determinant Calculation
@@ -64,7 +61,7 @@ Transpositions
 <pre>
 1 -2 4 
 3 0 -5 
-t
+tr
 </pre>
 
 Inverse of a matrix:
@@ -76,12 +73,6 @@ Inverse of a matrix:
 1 5 7
 inv
 </pre>
-
-<h3>Some other complex calculation matrixlab can perform</h3>
-
-<p>Imagine you want to solve the following system of linear equations:</p>
-
-<p>Execture with command: ./matrixlab matrix 3</p>
 
 <h3>Contacts</h3>
 
