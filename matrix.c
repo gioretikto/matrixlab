@@ -162,14 +162,17 @@ void inverse(struct matrix *A)
 		   
 	long double mdata[(n-1)*(n-1)];      /* remaining data values */
 		 
-	struct matrix M;    /* matrix structure for them */
-	M.data = mdata;
+	struct matrix M;    				/* matrix structure for them */
+
 	M.row = n-1;
 	M.col = n-1;
+	M.data = mdata;
+	size_t row, col;
 		   
 	for (count = 0; count < n*n; count++)       /* Create n*n Matrix of Minors */
 	{
-		size_t row = count/n, col = count%n;
+		row = count/n;
+		col = count%n;
 		for (i_count = i = 0; i < n; i++)
 			if (i != row)       /* don't copy the current row*/
 			{
@@ -180,9 +183,8 @@ void inverse(struct matrix *A)
 			}
 		/* transpose by swapping row and column */
         C.data[col*C.col+row] = powl(-1, (row&1) ^ (col&1)) * determinant(&M, n-1) / det;
-		M.data = mdata;
 	}
-		 
-	memcpy(A->data, C.data, sizeof(double) * C.row * C.col);
+
+	memcpy(A->data, C.data, sizeof(long double) * C.row * C.col);
 	free(C.data);
 }

@@ -23,6 +23,7 @@ int read_file(unsigned int dim, FILE *fp)
 	struct matrix *head = NULL;
 
 	char op = '?';
+	char unary_op = '?';
 
 	unsigned const int maxline = 100;
 
@@ -73,8 +74,11 @@ int read_file(unsigned int dim, FILE *fp)
 
 			else
 			{
-				add_item(&head, data, row, col, &op);
-				print_matrix(head);
+				if(unary_op == '?')
+				{
+					add_item(&head, data, row, col, &op);
+					print_matrix(head);
+				}
 
 				if (strncmp(buf, "det", 3) == 0)
 				{
@@ -83,7 +87,7 @@ int read_file(unsigned int dim, FILE *fp)
 						*head->data = determinant(head, head->row);
 						head->row = head->col = 1;
 						printf("det\n");
-						op = 'd';
+						unary_op = 'd';
 					}
 				}
 
@@ -94,7 +98,7 @@ int read_file(unsigned int dim, FILE *fp)
 						*head->data = trace(head);
 						head->row = head->col = 1;
 						printf("tr\n");
-						op = 'r';
+						unary_op = 'r';
 					}
 				}
 
@@ -108,7 +112,7 @@ int read_file(unsigned int dim, FILE *fp)
 						{
 							inverse(head);
 							printf("inv\n");
-							op = 'i';
+							unary_op = 'i';
 						}
 					}
 				}
@@ -119,7 +123,7 @@ int read_file(unsigned int dim, FILE *fp)
 					{
 						transpose(head);
 						printf("t\n");
-						op = 't';
+						unary_op = 't';
 					}
 				}
 
@@ -150,15 +154,22 @@ int read_file(unsigned int dim, FILE *fp)
 						break;
 
 				    case '/':
-						return stop(head, "you cannot divide matrices");
+						return stop(head, "You cannot divide matrices");
 		
 					default:
 						return stop(head, "Invalid character");
 				}
 
-				add_item(&head, data, row, col, &op);
-
-				print_matrix(head);
+				if (unary_op == '?')
+				{
+					add_item(&head, data, row, col, &op);
+					print_matrix(head);
+				}
+				else
+				{
+					head->op = op;
+					unary_op = '?';
+				}
 
 				printf("%c\n",op);
 
