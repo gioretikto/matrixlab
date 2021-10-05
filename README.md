@@ -77,12 +77,6 @@ Inverse of a matrix:
 inv
 </pre>
 
-<h3>Some other complex calculation matrixlab can perform</h3>
-
-<p>Imagine you want to solve the following system of linear equations:</p>
-
-<p>Execture with command: ./matrixlab matrix 3</p>
-
 <h3>Contacts</h3>
 
 giovannirestadev@gmail.com
